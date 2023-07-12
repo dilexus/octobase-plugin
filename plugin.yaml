@@ -1,0 +1,6 @@
+plugin:
+    name: 'dilexus.octobase::lang.plugin.name'
+    description: 'dilexus.octobase::lang.plugin.description'
+    author: Dilexus
+    icon: oc-icon-server
+    homepage: ''
