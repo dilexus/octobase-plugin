@@ -122,6 +122,7 @@ class Octobase {
             Route::put('{id}', function (Request $request, $id) use ($class)  {
                 try{
                     $inputs = $request->all();
+
                     $record = $class::find($id);
                     if($record){
                     if($request->input('id') && $id != $request->input('id')){
@@ -159,36 +160,36 @@ class Octobase {
             Route::post('{id}/files', function (Request $request, $id) use ($class) {
                 try{
                     $inputs = $request->allFiles();
-                    $record = $class::find($id);
+                    $keepFiles = filter_var( $request->input('keep'), FILTER_VALIDATE_BOOLEAN) ?? true;
+                    $record = $class::with(array_key_first($inputs))->find($id);
                     if($record){
-                    if($request->input('id') && $id != $request->input('id')){
-                        return response()->json(['error' => 'Ids are not matching'], 400);
-                    }
-
-                    foreach ($inputs as $key => $value) {
-                        if(is_array($value)){
-                            foreach ($value as $fileToUpload) {
-                                if ($record->$key) {
+                        if($request->input('id') && $id != $request->input('id')){
+                            return response()->json(['error' => 'Ids are not matching'], 400);
+                        }
+                        foreach ($inputs as $key => $value) {
+                            if(is_array($value)){
+                                if (!$keepFiles && $record->$key) {
                                     foreach ($record->$key as $fileToDelete) {
                                         $fileToDelete->delete();
                                     }
                                 }
+                                foreach ($value as $fileToUpload) {
+                                    $file = new \System\Models\File;
+                                    $file->data = $fileToUpload;
+                                    $file->is_public = true;
+                                    $file->save();
+                                    $record->$key()->add($file);
+                                }
+                            }else{
+                                if (!$keepFiles && $record->$key) {
+                                    $record->$key->delete();
+                                }
                                 $file = new \System\Models\File;
-                                $file->data = $fileToUpload;
+                                $file->data = $value;
                                 $file->is_public = true;
                                 $file->save();
                                 $record->$key()->add($file);
                             }
-                        }else{
-                            if ($record->$key) {
-                                $record->$key->delete();
-                            }
-                            $file = new \System\Models\File;
-                            $file->data = $value;
-                            $file->is_public = true;
-                            $file->save();
-                            $record->$key()->add($file);
-                        }
 
                     }
                     $record->refresh();
