@@ -1,18 +1,25 @@
 <?php namespace Dilexus\Octobase\Classes\Api\Lib;
 
+
+use Dilexus\Octobase\Classes\Api\Middleware\OctobaseAuthAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 class Octobase {
 
-    function enableCrud($class, $listMiddleWhere = [], $viewMiddleWhere = [], $createMiddleWhere = [], $updateMiddleWhere = [], $deleteMiddleWhere = []){
+    function enableCrud($class,
+        $listM = [OctobaseAuthAdmin::class],
+        $viewM = [OctobaseAuthAdmin::class],
+        $createM = [OctobaseAuthAdmin::class],
+        $updateM = [OctobaseAuthAdmin::class],
+        $deleteM = [OctobaseAuthAdmin::class]) {
 
         $model = explode("\\", $class);
         $model = end($model);
         $controller = Str::plural($model);
 
-        Route::prefix(strtolower($controller))->group(function () use ($class, $listMiddleWhere, $viewMiddleWhere, $createMiddleWhere, $updateMiddleWhere, $deleteMiddleWhere) {
+        Route::prefix(strtolower($controller))->group(function () use ($class, $listM, $viewM, $createM, $updateM, $deleteM) {
 
             Route::get('', function (Request $request) use ($class) {
                 try{
@@ -73,7 +80,7 @@ class Octobase {
                 }catch(\Exception $e){
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
-            })->middleware($listMiddleWhere);
+            })->middleware($listM);
 
             Route::get('{id}', function (Request $request, $id) use ($class)  {
                 try{
@@ -102,7 +109,7 @@ class Octobase {
                 }catch(\Exception $e){
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
-            })->middleware($viewMiddleWhere);
+            })->middleware($viewM);
 
             Route::post('', function (Request $request) use ($class)  {
                 try{
@@ -117,7 +124,7 @@ class Octobase {
                 }catch(\Exception $e){
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
-            })->middleware($createMiddleWhere);;
+            })->middleware($createM);;
 
             Route::put('{id}', function (Request $request, $id) use ($class)  {
                 try{
@@ -142,7 +149,7 @@ class Octobase {
                 }catch(\Exception $e){
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
-            })->middleware($updateMiddleWhere);
+            })->middleware($updateM);
 
             Route::delete('{id}', function ($id) use ($class)  {
                 try{
@@ -155,7 +162,7 @@ class Octobase {
                 }catch(\Exception $e){
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
-            })->middleware($deleteMiddleWhere);
+            })->middleware($deleteM);
 
             Route::post('{id}/files', function (Request $request, $id) use ($class) {
                 try{
@@ -201,7 +208,7 @@ class Octobase {
                 }catch(\Exception $e){
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
-            })->middleware($updateMiddleWhere);
+            })->middleware($updateM);
 
 
             Route::delete('{id}/files', function (Request $request, $id) use ($class) {
@@ -236,7 +243,7 @@ class Octobase {
                 }catch(\Exception $e){
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
-            })->middleware($deleteMiddleWhere);
+            })->middleware($deleteM);
 
         });
     }
