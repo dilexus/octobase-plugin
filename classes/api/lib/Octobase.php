@@ -1,19 +1,19 @@
 <?php namespace Dilexus\Octobase\Classes\Api\Lib;
 
 
-use Dilexus\Octobase\Classes\Api\Middleware\OctobaseAuthAdmin;
+use Dilexus\Octobase\Classes\Api\Middleware\OctobaseAuthDenied;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 class Octobase {
 
-    function enableCrud($class,
-        $listM = [OctobaseAuthAdmin::class],
-        $viewM = [OctobaseAuthAdmin::class],
-        $createM = [OctobaseAuthAdmin::class],
-        $updateM = [OctobaseAuthAdmin::class],
-        $deleteM = [OctobaseAuthAdmin::class]) {
+    function crud($class,
+        $listM = [OctobaseAuthDenied::class],
+        $viewM = [OctobaseAuthDenied::class],
+        $createM = [OctobaseAuthDenied::class],
+        $updateM = [OctobaseAuthDenied::class],
+        $deleteM = [OctobaseAuthDenied::class]) {
 
         $model = explode("\\", $class);
         $model = end($model);
