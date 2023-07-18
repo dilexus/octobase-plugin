@@ -1,6 +1,7 @@
 <?php namespace Dilexus\Octobase;
 
 use Dilexus\Octobase\Classes\Api\Middleware\OctobaseAuthAdmin;
+use Dilexus\Octobase\Classes\Api\Middleware\OctobaseAuthGroups;
 use Dilexus\Octobase\Classes\Api\Middleware\OctobaseAuthPublic;
 use Dilexus\Octobase\Classes\Api\Middleware\OctobaseAuthRegistered;
 use Dilexus\Octobase\Classes\Api\Middleware\OctobaseAuthRestricted;
@@ -30,6 +31,10 @@ class Plugin extends PluginBase
 
         $this->app->singleton('obRestricted', function ($app) {
             return new OctobaseAuthRestricted;
+        });
+
+        $this->app->singleton('obGroups', function ($app) {
+            return new OctobaseAuthGroups;
         });
 
     }
