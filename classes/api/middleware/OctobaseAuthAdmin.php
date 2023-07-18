@@ -16,6 +16,7 @@ class OctobaseAuthAdmin {
         $groups = $authUser['groups']->lists('code');
         if(in_array('admin', $groups)){
             $request->merge(['userId' => $user['id']]);
+            $request->attributes->add(['own' => 'false']);
             return $next($request);
         }else {
             return response()->json(['error' => 'Unauthorized Accesss'], 401);

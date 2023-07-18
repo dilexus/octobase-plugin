@@ -5,7 +5,7 @@ use October\Rain\Auth\Models\User;
 use RainLab\User\Facades\Auth;
 
 class OctobaseAuthRegistered {
-    public function handle($request, Closure $next, $own = 'true'){
+    public function handle($request, Closure $next, $own = 'false'){
         $authroization = $request->header('Authorization');
         $token = str_replace('Bearer ', '', $authroization);
         $user = User::whereRaw('SHA2(persist_code, 256) = ?', [$token])->first();
