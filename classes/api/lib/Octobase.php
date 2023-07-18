@@ -1,7 +1,6 @@
 <?php namespace Dilexus\Octobase\Classes\Api\Lib;
 
 
-use Dilexus\Octobase\Classes\Api\Middleware\OctobaseAuthDenied;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -9,11 +8,11 @@ use Illuminate\Support\Str;
 class Octobase {
 
     function crud($class,
-        $listM = [OctobaseAuthDenied::class],
-        $viewM = [OctobaseAuthDenied::class],
-        $createM = [OctobaseAuthDenied::class],
-        $updateM = [OctobaseAuthDenied::class],
-        $deleteM = [OctobaseAuthDenied::class]) {
+        $listM = ['obRestricted'],
+        $viewM = ['obRestricted'],
+        $createM = ['obRestricted'],
+        $updateM = ['obRestricted'],
+        $deleteM = ['obRestricted']) {
 
         $model = explode("\\", $class);
         $model = end($model);
@@ -23,6 +22,8 @@ class Octobase {
 
             Route::get('', function (Request $request) use ($class) {
                 try{
+                    $userId = $request->get('userId');
+                    $own = $request->get('own');
                     $with = $request->input('with');
                     $select = $request->input('select');
                     $where = $request->input('where');
@@ -42,7 +43,10 @@ class Octobase {
                         if($where){
                             $records->whereRaw($where);
                         }
-                         if($order){
+                        if(!empty($userId) && $own === 'true'){
+                            $records->whereRaw('user_id = '.$userId);
+                        }
+                        if($order){
                              $records->orderByRaw($order);
                         }
                         $records = $records->paginate($perPage, ['*'], 'page', $page);
@@ -65,7 +69,10 @@ class Octobase {
                         if($where){
                             $records->whereRaw($where);
                         }
-                         if($order){
+                        if(!empty($userId) && $own === 'true'){
+                            $records->whereRaw('user_id = '.$userId);
+                        }
+                        if($order){
                              $records->orderByRaw($order);
                         }
                         $records = $records->get();
@@ -84,6 +91,8 @@ class Octobase {
 
             Route::get('{id}', function (Request $request, $id) use ($class)  {
                 try{
+                    $userId = $request->get('userId');
+                    $own = $request->get('own');
                     $with = $request->input('with');
                     $select = $request->input('select');
                     $locale = $request->input('locale');
@@ -95,6 +104,11 @@ class Octobase {
                     if($with){
                         $records->with(explode(',', $with));
                     }
+
+                    if(!empty($userId) && $own === 'true'){
+                        $records->whereRaw('user_id = '.$userId);
+                    }
+
                     $record = $records->find($id);
 
                     if($locale){
@@ -113,10 +127,14 @@ class Octobase {
 
             Route::post('', function (Request $request) use ($class)  {
                 try{
+                    $userId = $request->get('userId');
                     $inputs = $request->all();
                     $record = new $class;
                     foreach ($inputs as $key => $value) {
                         $record->fill([$key => $value]);
+                    }
+                    if(!empty($userId)){
+                        $record->fill(['user_id' => $userId]);
                     }
                     $record->save();
                     $record->refresh();
@@ -126,11 +144,16 @@ class Octobase {
                 }
             })->middleware($createM);;
 
-            Route::put('{id}', function (Request $request, $id) use ($class)  {
+            Route::post('{id}', function (Request $request, $id) use ($class)  {
                 try{
+                    $userId = $request->get('userId');
+                    $own = $request->get('own');
                     $inputs = $request->all();
-
-                    $record = $class::find($id);
+                    if($own === 'true'){
+                        $record = $class::where('id', $id)->where('user_id', $userId)->first();
+                    }else{
+                        $record = $class::find($id);
+                    }
                     if($record){
                     if($request->input('id') && $id != $request->input('id')){
                         return response()->json(['error' => 'Ids are not matching'], 400);
@@ -139,6 +162,7 @@ class Octobase {
                     foreach ($inputs as $key => $value) {
                         $update[$key] = $value;
                     }
+
                     $record->update($update);
                     $record->refresh();
                     return response()->json($record);
@@ -151,9 +175,15 @@ class Octobase {
                 }
             })->middleware($updateM);
 
-            Route::delete('{id}', function ($id) use ($class)  {
+            Route::delete('{id}', function (Request $request, $id) use ($class)  {
+                $userId = $request->get('userId');
+                $own = $request->get('own');
                 try{
-                    $record = $class::find($id);
+                    if($own === 'true'){
+                        $record = $class::where('id', $id)->where('user_id', $userId)->first();
+                    }else{
+                        $record = $class::find($id);
+                    }
                     if($record){
                         $record->delete();
                     }else{

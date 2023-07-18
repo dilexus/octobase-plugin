@@ -7,24 +7,23 @@ Route::prefix('octobase')->group(function () {
 
     Route::post('signin', function (Request $request)  {
         try{
-            $authroization = $request->header('Authorization');
-            $token = str_replace('Bearer ', '', $authroization);
-            $credentials = explode(':', base64_decode($token));
-            $username = $credentials[0];
-            $password = $credentials[1];
+                $authroization = $request->header('Authorization');
+                $token = str_replace('Bearer ', '', $authroization);
+                $credentials = explode(':', base64_decode($token));
+                $username = $credentials[0];
+                $password = $credentials[1];
 
             $user = getAuthUser($username, $password);
             return response()->json([ 'first_name' => $user['name'],
-            'last_name' => $user['surname'],
-            'email' => $user['email'],
-            'username' => $user['username'],
-            'groups' => $user['groups']->lists('code'),
-            'token' => hash('sha256',$user['persist_code'])]);
-
+                'last_name' => $user['surname'],
+                'email' => $user['email'],
+                'username' => $user['username'],
+                'groups' => $user['groups']->lists('code'),
+                'token' => hash('sha256',$user['persist_code']),
+            ]);
         }catch(\Exception $e){
-            return response()->json(['error' => 'Incorrect credentials'], 400);
+            return response()->json(['error' =>  $e->getMessage()], 400);
         }
-
     });
 
     Route::post('signout', function (Request $request)  {
@@ -39,20 +38,36 @@ Route::prefix('octobase')->group(function () {
             Auth::logout();
             return response()->json(['success' => 'Signout Success']);
         }catch(\Exception $e){
-            return response()->json(['error' => 'Incorrect credentials'], 400);
+            return response()->json(['error' =>  $e->getMessage()], 400);
         }
-
     });
 
+    Route::post('signup', function (Request $request)  {
+        try{
+            Auth::register([
+                'name' => $request->input('first_name'),
+                'surname' => $request->input('last_name'),
+                'email' => $request->input('email'),
+                'username' => $request->input('username'),
+                'password' => $request->input('password'),
+                'password_confirmation' => $request->input('password_confirmation'),
+            ]);
+            return response()->json(['success' => 'Registration Success']);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    });
 
     Route::post('login', function (Request $request)  {
         try{
             $authroization = $request->header('Authorization');
             $token = str_replace('Bearer ', '', $authroization);
             $user = User::whereRaw('SHA2(persist_code, 256) = ?', [$token])->first();
+
             if(!$user){
                 return response()->json(['error' => 'Authentication Failed'], 400);
             }
+
             $authUser = Auth::findUserById($user->id);
 
             if($user){
@@ -61,15 +76,15 @@ Route::prefix('octobase')->group(function () {
                  'email' => $user['email'],
                  'username' => $user['username'],
                  'groups' => $authUser['groups']->lists('code'),
-                 'token' => $token]);
+                 'token' => $token]
+            );
+
             }else{
                 return response()->json(['error' => 'User Not Found for the given token'], 400);
             }
-
         }catch(\Exception $e){
-            return response()->json(['error' => 'Incorrect credentials'], 400);
+            return response()->json(['error' =>  $e->getMessage()], 400);
         }
-
     });
 
     function getAuthUser($username, $password){
@@ -80,9 +95,7 @@ Route::prefix('octobase')->group(function () {
             ]);
             return $user;
         }catch(\Exception $e){
-            return response()->json(['error' => 'Username or password is incorrect'], 400);
+            return response()->json(['error' =>  $e->getMessage()], 400);
         }
     }
-
-
 });
