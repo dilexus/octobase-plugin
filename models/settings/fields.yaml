@@ -1,0 +1,11 @@
+fields:
+    registration_disabled:
+        label: 'Disable Registration'
+        span: full
+        type: checkbox
+        comment: 'Disable users to register on from the API.'
+    require_activation:
+        label: 'Activiate the User'
+        span: full
+        type: checkbox
+        comment: 'Activate user upon registration.'

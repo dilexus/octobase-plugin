@@ -58,5 +58,16 @@ class Plugin extends PluginBase
      */
     public function registerSettings()
     {
+        return [
+            'location' => [
+                'label'       => 'Octobase Settigs',
+                'description' => 'Octobase Settings to manage Octobase Plugin',
+                'category'    => 'Octobase',
+                'icon'        => 'icon-settings',
+                'class'       => 'Dilexus\Octobase\Models\Settings',
+                'order'       => 500,
+                'keywords'    => 'octobase'
+            ]
+        ];
     }
 }
