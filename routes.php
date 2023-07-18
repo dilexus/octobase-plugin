@@ -65,9 +65,18 @@ Route::prefix('octobase')->group(function () {
                     'password' => $request->input('password'),
                     'password_confirmation' => $request->input('password_confirmation'),
                 ];
-                $user = Auth::register($payload, $require_activation);
+                $authUser = Auth::register($payload, $require_activation);
+                $authUser->groups()->attach(2);
 
-                return response()->json($user);
+                return response()->json([ 'first_name' => $authUser['name'],
+                 'last_name' => $authUser['surname'],
+                 'email' => $authUser['email'],
+                 'username' => $authUser['username'],
+                 'is_activated' => $authUser['is_activated'],
+                 'groups' => $authUser['groups']->lists('code'),
+                 'avatar' => $authUser['avatar'],
+                 'token' => hash('sha256',$authUser['persist_code'])]
+                 );
             }
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()], 400);
@@ -93,6 +102,7 @@ Route::prefix('octobase')->group(function () {
                  'username' => $authUser['username'],
                  'is_activated' => $authUser['is_activated'],
                  'groups' => $authUser['groups']->lists('code'),
+                 'avatar' => $authUser['avatar'],
                  'token' => $token]
             );
 
