@@ -6,7 +6,7 @@ use RainLab\User\Facades\Auth;
 
 Route::prefix('octobase')->group(function () {
 
-    Route::post('signin', function (Request $request)  {
+    Route::post('login', function (Request $request)  {
         try{
                 $authroization = $request->header('Authorization');
                 $token = str_replace('Bearer ', '', $authroization);
@@ -33,7 +33,7 @@ Route::prefix('octobase')->group(function () {
         }
     });
 
-    Route::post('signout', function (Request $request)  {
+    Route::post('logout', function (Request $request)  {
         try{
             $authroization = $request->header('Authorization');
             $token = str_replace('Bearer ', '', $authroization);
@@ -49,7 +49,7 @@ Route::prefix('octobase')->group(function () {
         }
     });
 
-    Route::post('signup', function (Request $request)  {
+    Route::post('register', function (Request $request)  {
         try{
             $registration_disabled = Settings::get('registration_disabled');
             $require_activation = Settings::get('require_activation');
@@ -67,14 +67,17 @@ Route::prefix('octobase')->group(function () {
                 ];
                 $authUser = Auth::register($payload, $require_activation);
                 $authUser->groups()->attach(2);
-
+                $avatar = $authUser['avatar'];
+                if($avatar){
+                    $avatar = ['path' => $avatar['path'], 'extenstion' => $avatar['extension']];
+                }
                 return response()->json([ 'first_name' => $authUser['name'],
                  'last_name' => $authUser['surname'],
                  'email' => $authUser['email'],
                  'username' => $authUser['username'],
                  'is_activated' => $authUser['is_activated'],
                  'groups' => $authUser['groups']->lists('code'),
-                 'avatar' => $authUser['avatar'],
+                 'avatar' =>$avatar,
                  'token' => hash('sha256',$authUser['persist_code'])]
                  );
             }
@@ -96,13 +99,17 @@ Route::prefix('octobase')->group(function () {
             $authUser = Auth::findUserById($user->id);
 
             if($authUser){
+                $avatar = $authUser['avatar'];
+                if($avatar){
+                    $avatar = ['path' => $avatar['path'], 'extenstion' => $avatar['extension']];
+                }
                  return response()->json([ 'first_name' => $user['name'],
                  'last_name' => $authUser['surname'],
                  'email' => $authUser['email'],
                  'username' => $authUser['username'],
                  'is_activated' => $authUser['is_activated'],
                  'groups' => $authUser['groups']->lists('code'),
-                 'avatar' => $authUser['avatar'],
+                 'avatar' => $avatar,
                  'token' => $token]
             );
 
@@ -130,11 +137,17 @@ Route::prefix('octobase')->group(function () {
             $authUser = Auth::findUserById($user->id);
 
             if($authUser){
+                $avatar = $authUser['avatar'];
+                if($avatar){
+                    $avatar = ['path' => $avatar['path'], 'extenstion' => $avatar['extension']];
+                }
                  return response()->json([ 'first_name' => $authUser['name'],
                  'last_name' => $authUser['surname'],
                  'email' => $authUser['email'],
                  'username' => $authUser['username'],
+                 'is_activated' => $authUser['is_activated'],
                  'groups' => $authUser['groups']->lists('code'),
+                 'avatar' => $avatar,
                  'token' => hash('sha256',$authUser['persist_code'])]
             );
 
