@@ -1,10 +1,11 @@
 <?php
 use Illuminate\Http\Request;
+use October\Rain\Auth\Models\User;
 use RainLab\User\Facades\Auth;
 
 Route::prefix('octobase')->group(function () {
 
-    Route::post('login', function (Request $request)  {
+    Route::post('signin', function (Request $request)  {
         try{
             $authroization = $request->header('Authorization');
             $token = str_replace('Bearer ', '', $authroization);
@@ -17,6 +18,7 @@ Route::prefix('octobase')->group(function () {
             'last_name' => $user['surname'],
             'email' => $user['email'],
             'username' => $user['username'],
+            'groups' => $user['groups']->lists('code'),
             'token' => hash('sha256',$user['persist_code'])]);
 
         }catch(\Exception $e){
@@ -25,13 +27,50 @@ Route::prefix('octobase')->group(function () {
 
     });
 
-    function findGroupByCode($groups, $code){
-        foreach ( $groups as $element ) {
-            if ( $code == $element->code ) {
-                return $element;
+    Route::post('signout', function (Request $request)  {
+        try{
+            $authroization = $request->header('Authorization');
+            $token = str_replace('Bearer ', '', $authroization);
+            $user = User::whereRaw('SHA2(persist_code, 256) = ?', [$token])->first();
+            if(!$user){
+                return response()->json(['error' => 'Authentication Failed'], 400);
             }
+            Auth::setUser($user);
+            Auth::logout();
+            return response()->json(['success' => 'Signout Success']);
+        }catch(\Exception $e){
+            return response()->json(['error' => 'Incorrect credentials'], 400);
         }
-    }
+
+    });
+
+
+    Route::post('login', function (Request $request)  {
+        try{
+            $authroization = $request->header('Authorization');
+            $token = str_replace('Bearer ', '', $authroization);
+            $user = User::whereRaw('SHA2(persist_code, 256) = ?', [$token])->first();
+            if(!$user){
+                return response()->json(['error' => 'Authentication Failed'], 400);
+            }
+            $authUser = Auth::findUserById($user->id);
+
+            if($user){
+                 return response()->json([ 'first_name' => $user['name'],
+                 'last_name' => $user['surname'],
+                 'email' => $user['email'],
+                 'username' => $user['username'],
+                 'groups' => $authUser['groups']->lists('code'),
+                 'token' => $token]);
+            }else{
+                return response()->json(['error' => 'User Not Found for the given token'], 400);
+            }
+
+        }catch(\Exception $e){
+            return response()->json(['error' => 'Incorrect credentials'], 400);
+        }
+
+    });
 
     function getAuthUser($username, $password){
         try{
