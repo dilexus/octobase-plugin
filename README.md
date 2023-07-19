@@ -17,12 +17,13 @@ If you want to expose a REST webservice from your OctoberCMS plugin, please ensu
   Route::prefix('api/school/v1')->group(function () {
 
     (new Octobase)->crud('Dilexus\School\Models\Student',
-        ['obPublic'],
-        ['obPublic'],
-        ['obPublic'],
-        ['obPublic'],
-        ['obPublic']
+        ['obPublic'], // List All records
+        ['obPublic'], // List single record
+        ['obPublic'], // add single record
+        ['obPublic'], // update single record
+        ['obPublic']  // delete single record
     );
+
 });
 
  ```
@@ -32,6 +33,8 @@ Here ObPublic is a middlewere that expose your CRUD APIs to public.
 ## Operations
 
 The above will expose the following APIs to the public
+
+### Main APIs
 
 GET     /api/school/v1/students       - List all students
 
@@ -43,9 +46,27 @@ POST    /api/school/v1/students/1    - updates a student by Id
 
 DELETE  /api/school/v1/students/1  - delete a student by Id
 
+### File APIs
+
 POST    /api/school/v1/students/1/files    - upload file to the student (form file parameters are required)
 
 DELETE    /api/school/v1/students/1/files    - delete file of a student (file parameter name is required, use all to delete all files)
+
+
+## More Examples
+
+This will only allow list API to public, by default other APIs are restricted to anyone
+
+```
+  Route::prefix('api/school/v1')->group(function () {
+
+    (new Octobase)->crud('Dilexus\School\Models\Category',
+        ['obPublic'], // List All records
+    );
+
+});
+
+ ```
 
 
 ## Middleware
