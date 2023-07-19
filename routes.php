@@ -39,7 +39,7 @@ Route::prefix('octobase')->group(function () {
             $token = str_replace('Bearer ', '', $authroization);
             $user = User::whereRaw('SHA2(persist_code, 256) = ?', [$token])->first();
             if(!$user){
-                return response()->json(['error' => 'No user exists for authentication purposes'], 401);
+                return response()->json(['error' => 'Unauthroized acceess'], 401);
             }
             Auth::setUser($user);
             Auth::logout();
@@ -93,7 +93,7 @@ Route::prefix('octobase')->group(function () {
             $user = User::whereRaw('SHA2(persist_code, 256) = ?', [$token])->first();
 
             if(!$user){
-                return response()->json(['error' => 'No user exists for authentication purposes'], 401);
+                return response()->json(['error' => 'Unauthroized acceess'], 401);
             }
 
             $authUser = Auth::findUserById($user->id);
@@ -128,7 +128,7 @@ Route::prefix('octobase')->group(function () {
             $user = User::whereRaw('SHA2(persist_code, 256) = ?', [$token])->first();
 
             if(!$user){
-                return response()->json(['error' => 'No user exists for authentication purposes'], 401);
+                return response()->json(['error' => 'Unauthroized acceess'], 401);
             }
 
             Auth::setUser($user);
