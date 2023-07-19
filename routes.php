@@ -159,15 +159,4 @@ Route::prefix('octobase')->group(function () {
         }
     });
 
-    function getAuthUser($username, $password){
-        try{
-            $user = Auth::authenticate([
-                'login' => $username,
-                'password' => $password
-            ]);
-            return $user;
-        }catch(\Exception $e){
-            return response()->json(['error' =>  $e->getMessage()], 400);
-        }
-    }
 });
