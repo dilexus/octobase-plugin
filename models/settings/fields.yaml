@@ -8,4 +8,4 @@ fields:
         label: 'Activiate User'
         span: full
         type: checkbox
-        comment: 'Activate user upon registration.'
+        comment: 'Activate user upon registration'
