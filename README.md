@@ -35,13 +35,18 @@ The above will expose the following APIs to the public
 
 GET     /api/school/v1/students       - List all students
 
-GET     /api/school/v1/students/1     - List single student by Id
+GET     /api/school/v1/students/1     - List single student by Id (form parameters are required)
 
-POST    /api/school/v1/students      - Create a new student
+POST    /api/school/v1/students      - Create a new student (form parameters are required)
 
 POST    /api/school/v1/students/1    - updates a student by Id
 
 DELETE  /api/school/v1/students/1  - delete a student by Id
+
+POST    /api/school/v1/students/1/files    - upload file to the student (form file parameters are required)
+
+DELETE    /api/school/v1/students/1/files    - delete file of a student (file parameter name is required, use all to delete all files)
+
 
 ## Middleware
 
