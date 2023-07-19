@@ -19,7 +19,7 @@ Route::prefix('octobase')->group(function () {
                     'password' => $password
                 ]);
                 if(!$user){
-                    return response()->json(['error' => 'Authentication Failed'], 400);
+                    return response()->json(['error' => 'No user exists for authentication purposes'], 401);
                 }
             return response()->json([ 'first_name' => $user['name'],
                 'last_name' => $user['surname'],
@@ -39,7 +39,7 @@ Route::prefix('octobase')->group(function () {
             $token = str_replace('Bearer ', '', $authroization);
             $user = User::whereRaw('SHA2(persist_code, 256) = ?', [$token])->first();
             if(!$user){
-                return response()->json(['error' => 'Authentication Failed'], 400);
+                return response()->json(['error' => 'No user exists for authentication purposes'], 401);
             }
             Auth::setUser($user);
             Auth::logout();
@@ -55,7 +55,7 @@ Route::prefix('octobase')->group(function () {
             $require_activation = Settings::get('require_activation');
             Settings::get('registration_disabled');
             if($registration_disabled){
-                return response()->json(['error' => 'Registration is disabled'], 400);
+                return response()->json(['error' => 'User registration is disabled'], 403);
             }else {
                 $payload = [
                     'name' => $request->input('first_name'),
@@ -93,7 +93,7 @@ Route::prefix('octobase')->group(function () {
             $user = User::whereRaw('SHA2(persist_code, 256) = ?', [$token])->first();
 
             if(!$user){
-                return response()->json(['error' => 'Authentication Failed'], 400);
+                return response()->json(['error' => 'No user exists for authentication purposes'], 401);
             }
 
             $authUser = Auth::findUserById($user->id);
@@ -114,7 +114,7 @@ Route::prefix('octobase')->group(function () {
             );
 
             }else{
-                return response()->json(['error' => 'User Not Found for the given token'], 400);
+                return response()->json(['error' => 'User not Found for the given token'], 403);
             }
         }catch(\Exception $e){
             return response()->json(['error' =>  $e->getMessage()], 400);
@@ -128,7 +128,7 @@ Route::prefix('octobase')->group(function () {
             $user = User::whereRaw('SHA2(persist_code, 256) = ?', [$token])->first();
 
             if(!$user){
-                return response()->json(['error' => 'Authentication Failed'], 400);
+                return response()->json(['error' => 'No user exists for authentication purposes'], 401);
             }
 
             Auth::setUser($user);
