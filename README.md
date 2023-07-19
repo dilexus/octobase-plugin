@@ -67,17 +67,17 @@ You can authenticate the API using following API. You have to send the base64 en
 
 POST /octobase/login
 
-### Registration
+#### Registration
 You can register the user using following API. You need to send first_name, last_name, email, password, confirm_password as form parameter. You can disable this feature from Octobase plugin settings. Also You can enable the auto activation of the user from the plugin settings.
 
 POST /octobase/register
 
-### Refresh
+#### Refresh
 You can send the SHA256 token and get a new token from refresh API. You need to send the token in the Authtorization heder as a Bearer token
 
 POST /octobase/refresh
 
-### User
+#### User
 You get the user information from this API. You need to send the token in the Authtorization heder as a Bearer token
 
 GET /octobase/user
