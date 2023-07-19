@@ -1,4 +1,11 @@
 <?php
+//
+// Copyright 2023 Chatura Dilan Perera. All rights reserved.
+// Use of this source code is governed by license that can be
+//  found in the LICENSE file.
+// Website: https://www.dilan.me
+//
+
 use Dilexus\Octobase\Models\Settings;
 use Illuminate\Http\Request;
 use October\Rain\Auth\Models\User;
