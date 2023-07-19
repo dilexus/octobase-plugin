@@ -90,6 +90,20 @@ GET /octobase/user
 ### Authrorization
 To Authorize all your APIs you need to send the token in the Authtorization heder as a bearer token
 
+## Create your own APIs with Middleware
+You can attach Octobase middleware to your own APIs as well. As an example.
+
+```
+Route::prefix('api/school/v1')->group(function () {
+
+    Route::get('student/{id}/getInfo', function (Request $request, $id)  {
+       // Logic Here
+    })->middleware([obregistered]);
+
+});
+
+```
+
 ##  License (MIT)
 
 Copyright (c) 2023 Chatura Dilan Perera
