@@ -1,0 +1,25 @@
+{
+    "name": "dilexus/octobase-plugin",
+    "type": "october-plugin",
+    "description": "REST API Services Plugin for OctoberCMS",
+    "require": {
+        "composer/installers": "~1.0",
+        "rainlab/user-plugin": ">=2.1.0"
+    },
+    "homepage": "https://dilan.me",
+    "keywords": [
+        "octobase",
+        "octobercms",
+        "rest",
+        "api",
+        "services"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dilan Perera",
+            "email": "dilan@dilan.me",
+            "role": "Developer"
+        }
+    ]
+}
