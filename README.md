@@ -1,8 +1,19 @@
 
- # Octobase
+ # Octobase : REST API Services Plugin for OctoberCMS
 
 ## Introduction
 An awesome  plugin for OctoberCMS is available to expose REST API services for data access from anywhere. This plugin enables the creation of CRUD operations for REST services and allows the creation of custom REST services with middleware support for API authorization. Additionally, the plugin provides an API for OctoberCMS frontend users to perform actions such as login, registration, token refresh, and retrieval of user information. Bearer API tokens are utilized for API authorization within this plugin.
+
+## Roadmap
+This plugin requires additional features to be added in the future.
+
+1. Social Auth Login support
+2. Mobile and Web SDKs(Javascript, Flutter, Kotlin, Swift) support for the plugin
+
+You can assist in accelerating the development of the plugin by contributing to the following features that are on the roadmap.
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/bcdperera)
+
 
 ##  How To
 If you want to expose a REST webservice from your OctoberCMS plugin, please ensure that the following plugins have been installed.
