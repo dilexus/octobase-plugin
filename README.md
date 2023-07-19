@@ -45,7 +45,7 @@ DELETE  /api/school/v1/students/1  - delete a student by Id
 
 ## Middleware
 
-### ObRestricted
+#### ObRestricted
 Restrict Anyone from acccessing the APIs
 
 #### ObRegistred
@@ -63,7 +63,7 @@ Only the defined groups can access the APIs. For example, if you want to restric
 ## Authentication and Authrorization
 
 ### Authentication
-You can authenticate the API using following API. You have to send the base64 encoded username:password in a Authtorization heder as a bearer token
+You can authenticate the API using following API. You have to send the base64 encoded username:password in a Authtorization heder as a Bearer token
 
 POST /octobase/login
 
@@ -73,12 +73,12 @@ You can register the user using following API. You need to send first_name, last
 POST /octobase/register
 
 ### Refresh
-You can send the SHA256 token and get a new token from refresh API. You need to send the token in the Authtorization heder as a bearer token
+You can send the SHA256 token and get a new token from refresh API. You need to send the token in the Authtorization heder as a Bearer token
 
 POST /octobase/refresh
 
 ### User
-You get the user information from this API. You need to send the token in the Authtorization heder as a bearer token
+You get the user information from this API. You need to send the token in the Authtorization heder as a Bearer token
 
 GET /octobase/user
 
