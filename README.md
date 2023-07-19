@@ -36,7 +36,7 @@ The above will expose the following APIs to the public
 
 ### Main APIs
 
-GET     /api/school/v1/students       - List all students
+GET     /api/school/v1/students       - List all students (you can use page, perPage query parametrs for pagination, with, where, order quary parameters to filter data)
 
 GET     /api/school/v1/students/1     - List single student by Id (form parameters are required)
 
