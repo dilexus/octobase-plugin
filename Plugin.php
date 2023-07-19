@@ -67,10 +67,10 @@ class Plugin extends PluginBase
     {
         return [
             'location' => [
-                'label'       => 'Octobase Settigs',
+                'label'       => 'Octobase Settings',
                 'description' => 'Octobase Settings to manage Octobase Plugin',
                 'category'    => 'Octobase',
-                'icon'        => 'icon-settings',
+                'icon'        => 'icon-leaf',
                 'class'       => 'Dilexus\Octobase\Models\Settings',
                 'order'       => 500,
                 'keywords'    => 'octobase'
