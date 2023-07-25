@@ -4,3 +4,7 @@ plugin:
     author: Dilexus
     icon: oc-icon-server
     homepage: ''
+permissions:
+    dilexus.octobase.manage:
+        tab: Octobase
+        label: 'Manage Octobase'
