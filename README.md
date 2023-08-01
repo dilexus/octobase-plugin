@@ -25,6 +25,11 @@ If you want to expose a REST webservice from your OctoberCMS plugin, please ensu
 2. As an example if you want to enable CRUD services. Let's say your plugin is School and you have a Model for Student
 
 ```
+use Dilexus\Octobase\Classes\Api\Lib\Octobase;
+
+...
+
+
   Route::prefix('api/school/v1')->group(function () {
 
     (new Octobase)->crud('Dilexus\School\Models\Student',
@@ -130,7 +135,7 @@ Route::prefix('api/school/v1')->group(function () {
 
     Route::get('student/{id}/getInfo', function (Request $request, $id)  {
        // Logic Here
-    })->middleware([obregistered]);
+    })->middleware(['obregistered']);
 
 });
 
