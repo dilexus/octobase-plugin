@@ -1,5 +1,6 @@
-v1.0.2:
-    - 'Restrict Settings to Super Users only'
-
 v1.0.1:
     - 'Initialize plugin'
+v1.0.2:
+    - 'Restrict Settings to Super Users only'
+v1.0.3:
+    - 'Fixed the issue in version'
