@@ -11,7 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-class Octobase {
+class Octobase
+{
 
     function crud($class,
         $listM = ['obRestricted'],
@@ -27,7 +28,7 @@ class Octobase {
         Route::prefix(strtolower($controller))->group(function () use ($class, $listM, $viewM, $createM, $updateM, $deleteM) {
 
             Route::get('', function (Request $request) use ($class) {
-                try{
+                try {
                     $userId = $request->get('userId');
                     $own = $request->get('own');
                     $with = $request->input('with');
@@ -38,26 +39,26 @@ class Octobase {
                     $perPage = $request->input('perPage') ?? 10;
                     $locale = $request->input('locale');
 
-                    if($page) {
+                    if ($page) {
                         $records = $class::query();
-                        if($select){
+                        if ($select) {
                             $records->selectRaw($select);
                         }
-                        if($with){
+                        if ($with) {
                             $records->with(explode(',', $with));
                         }
-                        if($where){
+                        if ($where) {
                             $records->whereRaw($where);
                         }
-                        if(!empty($userId) && $own === 'true'){
-                            $records->whereRaw('user_id = '.$userId);
+                        if (!empty($userId) && $own === 'true') {
+                            $records->whereRaw('user_id = ' . $userId);
                         }
-                        if($order){
-                             $records->orderByRaw($order);
+                        if ($order) {
+                            $records->orderByRaw($order);
                         }
                         $records = $records->paginate($perPage, ['*'], 'page', $page);
 
-                        if($locale){
+                        if ($locale) {
                             foreach ($records as $record) {
                                 $record->translateContext($locale);
                             }
@@ -66,37 +67,37 @@ class Octobase {
                         return response()->json(['data' => $records->items(), 'per_page' => $records->perPage(), 'total' => $records->total(), 'page' => $records->currentPage()]);
                     } else {
                         $records = $class::query();
-                        if($select){
+                        if ($select) {
                             $records->selectRaw($select);
                         }
-                        if($with){
+                        if ($with) {
                             $records->with(explode(',', $with));
                         }
-                        if($where){
+                        if ($where) {
                             $records->whereRaw($where);
                         }
-                        if(!empty($userId) && $own === 'true'){
-                            $records->whereRaw('user_id = '.$userId);
+                        if (!empty($userId) && $own === 'true') {
+                            $records->whereRaw('user_id = ' . $userId);
                         }
-                        if($order){
-                             $records->orderByRaw($order);
+                        if ($order) {
+                            $records->orderByRaw($order);
                         }
                         $records = $records->get();
 
-                        if($locale){
+                        if ($locale) {
                             foreach ($records as $record) {
                                 $record->translateContext($locale);
                             }
                         }
                         return response()->json(['data' => $records]);
                     }
-                }catch(\Exception $e){
+                } catch (\Exception $e) {
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
             })->middleware($listM);
 
-            Route::get('{id}', function (Request $request, $id) use ($class)  {
-                try{
+            Route::get('{id}', function (Request $request, $id) use ($class) {
+                try {
                     $userId = $request->get('userId');
                     $own = $request->get('own');
                     $with = $request->input('with');
@@ -104,113 +105,113 @@ class Octobase {
                     $locale = $request->input('locale');
 
                     $records = $class::query();
-                    if($select){
+                    if ($select) {
                         $records->selectRaw($select);
                     }
-                    if($with){
+                    if ($with) {
                         $records->with(explode(',', $with));
                     }
 
-                    if(!empty($userId) && $own === 'true'){
-                        $records->whereRaw('user_id = '.$userId);
+                    if (!empty($userId) && $own === 'true') {
+                        $records->whereRaw('user_id = ' . $userId);
                     }
 
                     $record = $records->find($id);
 
-                    if($locale){
-                       $record =  $record->lang($locale);
+                    if ($locale) {
+                        $record = $record->lang($locale);
                     }
 
-                    if($record){
+                    if ($record) {
                         return response()->json($record);
-                    }else{
+                    } else {
                         return response()->json(['error' => 'Record not found'], 404);
                     }
-                }catch(\Exception $e){
+                } catch (\Exception $e) {
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
             })->middleware($viewM);
 
-            Route::post('', function (Request $request) use ($class)  {
-                try{
+            Route::post('', function (Request $request) use ($class) {
+                try {
                     $userId = $request->get('userId');
                     $inputs = $request->all();
                     $record = new $class;
                     foreach ($inputs as $key => $value) {
                         $record->fill([$key => $value]);
                     }
-                    if(!empty($userId)){
+                    if (!empty($userId)) {
                         $record->fill(['user_id' => $userId]);
                     }
                     $record->save();
                     $record->refresh();
                     return response()->json($record, 201);
-                }catch(\Exception $e){
+                } catch (\Exception $e) {
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
             })->middleware($createM);;
 
-            Route::post('{id}', function (Request $request, $id) use ($class)  {
-                try{
+            Route::post('{id}', function (Request $request, $id) use ($class) {
+                try {
                     $userId = $request->get('userId');
                     $own = $request->get('own');
                     $inputs = $request->all();
-                    if($own === 'true'){
+                    if ($own === 'true') {
                         $record = $class::where('id', $id)->where('user_id', $userId)->first();
-                    }else{
+                    } else {
                         $record = $class::find($id);
                     }
-                    if($record){
-                    if($request->input('id') && $id != $request->input('id')){
-                        return response()->json(['error' => 'Ids are not matching'], 400);
-                    }
-                    $update = [];
-                    foreach ($inputs as $key => $value) {
-                        $update[$key] = $value;
-                    }
+                    if ($record) {
+                        if ($request->input('id') && $id != $request->input('id')) {
+                            return response()->json(['error' => 'Ids are not matching'], 400);
+                        }
+                        $update = [];
+                        foreach ($inputs as $key => $value) {
+                            $update[$key] = $value;
+                        }
 
-                    $record->update($update);
-                    $record->refresh();
-                    return response()->json($record);
-                    }else{
+                        $record->update($update);
+                        $record->refresh();
+                        return response()->json($record);
+                    } else {
                         return response()->json(['error' => 'Record not found'], 404);
                     }
 
-                }catch(\Exception $e){
+                } catch (\Exception $e) {
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
             })->middleware($updateM);
 
-            Route::delete('{id}', function (Request $request, $id) use ($class)  {
+            Route::delete('{id}', function (Request $request, $id) use ($class) {
                 $userId = $request->get('userId');
                 $own = $request->get('own');
-                try{
-                    if($own === 'true'){
+                try {
+                    if ($own === 'true') {
                         $record = $class::where('id', $id)->where('user_id', $userId)->first();
-                    }else{
+                    } else {
                         $record = $class::find($id);
                     }
-                    if($record){
+                    if ($record) {
                         $record->delete();
-                    }else{
+                    } else {
                         return response()->json(['error' => 'Record not found'], 404);
                     }
-                }catch(\Exception $e){
+                } catch (\Exception $e) {
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
             })->middleware($deleteM);
 
             Route::post('{id}/files', function (Request $request, $id) use ($class) {
-                try{
+                try {
                     $inputs = $request->allFiles();
-                    $keepFiles = filter_var( $request->input('keep'), FILTER_VALIDATE_BOOLEAN) ?? true;
+                    $keepFiles = filter_var($request->input('keep'), FILTER_VALIDATE_BOOLEAN) ?? true;
                     $record = $class::with(array_key_first($inputs))->find($id);
-                    if($record){
-                        if($request->input('id') && $id != $request->input('id')){
+                    if ($record) {
+                        if ($request->input('id') && $id != $request->input('id')) {
                             return response()->json(['error' => 'Ids are not matching'], 400);
                         }
                         foreach ($inputs as $key => $value) {
-                            if(is_array($value)){
+                            if (is_array($value)) {
                                 if (!$keepFiles && $record->$key) {
                                     foreach ($record->$key as $fileToDelete) {
                                         $fileToDelete->delete();
@@ -223,7 +224,7 @@ class Octobase {
                                     $file->save();
                                     $record->$key()->add($file);
                                 }
-                            }else{
+                            } else {
                                 if (!$keepFiles && $record->$key) {
                                     $record->$key->delete();
                                 }
@@ -234,49 +235,48 @@ class Octobase {
                                 $record->$key()->add($file);
                             }
 
-                    }
-                    $record->refresh();
-                    return response()->json($record);
-                    }else{
+                        }
+                        $record->refresh();
+                        return response()->json($record);
+                    } else {
                         return response()->json(['error' => 'Record not found'], 404);
                     }
 
-                }catch(\Exception $e){
+                } catch (\Exception $e) {
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
             })->middleware($updateM);
 
-
             Route::delete('{id}/files', function (Request $request, $id) use ($class) {
-                try{
+                try {
                     $all = $request->input('all') ?? false;
                     $file = $request->input('file');
-                    if(!$file){
+                    if (!$file) {
                         return response()->json(['error' => 'File name is required'], 400);
                     }
                     $record = $class::with($file)->find($id);
-                    if($record){
-                    if($request->input('id') && $id != $request->input('id')){
-                        return response()->json(['error' => 'Ids are not matching'], 400);
-                    }
-                        if($all){
-                                if ($record->$file) {
-                                    foreach ($record->$file as $fileToDelete) {
-                                        $fileToDelete->delete();
-                                    }
+                    if ($record) {
+                        if ($request->input('id') && $id != $request->input('id')) {
+                            return response()->json(['error' => 'Ids are not matching'], 400);
+                        }
+                        if ($all) {
+                            if ($record->$file) {
+                                foreach ($record->$file as $fileToDelete) {
+                                    $fileToDelete->delete();
                                 }
-                        }else{
+                            }
+                        } else {
                             if ($record->$file) {
                                 $record->$file->delete();
                             }
                         }
-                    $record->refresh();
-                    return response()->json($record);
-                    }else{
+                        $record->refresh();
+                        return response()->json($record);
+                    } else {
                         return response()->json(['error' => 'Record not found'], 404);
                     }
 
-                }catch(\Exception $e){
+                } catch (\Exception $e) {
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
             })->middleware($deleteM);

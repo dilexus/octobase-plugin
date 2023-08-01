@@ -9,8 +9,10 @@
 
 use Closure;
 
-class OctobaseAuthPublic {
-    public function handle($request, Closure $next){
+class OctobaseAuthPublic
+{
+    public function handle($request, Closure $next)
+    {
         return $next($request);
     }
 }
