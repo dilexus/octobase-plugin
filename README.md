@@ -68,6 +68,8 @@ POST    /api/school/v1/students/1/files    - upload file to the student (form fi
 
 DELETE    /api/school/v1/students/1/files    - delete file of a student (file parameter name is required, use all to delete all files)
 
+### Language
+if you want to speicify a language to the api, either you can use Content-Language (Eg: Content-Language: en) header or locale (Eg: locale=en) query parameter. For this you need to have OctoberCMS Translation plugin
 
 ## More Examples
 
