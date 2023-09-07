@@ -7,9 +7,9 @@
 // Website: https://www.dilan.me
 //
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class Octobase
 {
@@ -105,7 +105,11 @@ class Octobase
                     $own = $request->get('own');
                     $with = $request->input('with');
                     $select = $request->input('select');
-                    $locale = $request->input('locale');
+
+                    $locale = $request->header('Content-Language');
+                    if (empty($locale)) {
+                        $locale = $request->input('locale');
+                    }
 
                     $records = $class::query();
                     if ($select) {
