@@ -7,13 +7,12 @@
 // Website: https://www.dilan.me
 //
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
 
 class Octobase
 {
-
     function crud($class,
         $listM = ['obRestricted'],
         $viewM = ['obRestricted'],
@@ -37,7 +36,11 @@ class Octobase
                     $order = $request->input('order');
                     $page = $request->input('page');
                     $perPage = $request->input('perPage') ?? 10;
-                    $locale = $request->input('locale');
+
+                    $locale = $request->header('Content-Language');
+                    if (empty($locale)) {
+                        $locale = $request->input('locale');
+                    }
 
                     if ($page) {
                         $records = $class::query();
