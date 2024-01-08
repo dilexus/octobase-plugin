@@ -1,11 +1,17 @@
-fields:
-    registration_disabled:
-        label: 'Disable Registration'
-        span: full
-        type: checkbox
-        comment: 'Disable user registration through the API'
-    require_activation:
-        label: 'Activiate User'
-        span: full
-        type: checkbox
-        comment: 'Activate user upon registration'
+tabs:
+    fields:
+        registration_disabled:
+            label: 'Disable Registration'
+            span: full
+            type: checkbox
+            comment: 'Disable user registration through the API'
+        require_activation:
+            label: 'Activiate User'
+            span: full
+            type: checkbox
+            comment: 'Activate user upon registration'
+        enable_firebase_authentication:
+            label: 'Enable Firebase Authentication'
+            span: full
+            type: checkbox
+            comment: 'If you enable this you need to add firebase_credentials.json to your config folder'
