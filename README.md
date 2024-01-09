@@ -7,7 +7,7 @@ An awesome  plugin for OctoberCMS is available to expose REST API services for d
 ## Roadmap
 This plugin requires additional features to be added in the future.
 
-1. Social Auth Login support
+~~1. Social Auth Login support~~ (Completed with Firebase Authentication)
 2. Mobile and Web SDKs(Javascript, Flutter, Kotlin, Swift) support for the plugin
 
 You can assist in accelerating the development of the plugin by contributing to the following features that are on the roadmap.
@@ -125,6 +125,11 @@ POST /octobase/refresh
 You get the user information from this API. You need to send the token in the Authtorization heder as a Bearer token
 
 GET /octobase/user
+
+#### Firebase Authentication
+You can authenticate it with Firebase by sending ID token to following API. It required a form parameter called token (eg: token=<Firebase User ID Token>). It will create a record in Users if the user is not there or return the existing user with Octobase token. You can use Octobease token after that to call APIs. Firebase can be configured in Octobase Settings
+
+POST /octobase/login/firebase
 
 ### Authrorization
 To Authorize all your APIs you need to send the token in the Authtorization heder as a bearer token
