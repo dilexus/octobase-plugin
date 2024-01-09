@@ -173,7 +173,14 @@ Route::prefix('octobase')->group(function () {
     Route::post('login/social', function (Request $request) {
         try {
             $idTokenString = $request->input('token');
-            $factory = (new \Kreait\Firebase\Factory)->withServiceAccount('config/firebase_credentials.json');
+            $credentialsArray = json_decode(Settings::get('firebase_credentials'), true);
+            $firebase_credentials = Settings::get('firebase_credentials');
+            if (!empty($firebase_credentials)) {
+                $factory = (new \Kreait\Firebase\Factory)->withServiceAccount($firebase_credentials);
+            } else {
+                $factory = (new \Kreait\Firebase\Factory)->withServiceAccount('config/firebase_credentials.json');
+            }
+
             $auth = $factory->createAuth();
             $verifiedIdToken = $auth->verifyIdToken($idTokenString);
             $uid = $verifiedIdToken->claims()->get('sub');

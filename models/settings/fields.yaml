@@ -12,6 +12,14 @@ tabs:
             comment: 'Activate user upon registration'
         enable_firebase_authentication:
             label: 'Enable Firebase Authentication'
+            tab: 'Firebase'
             span: full
             type: checkbox
-            comment: 'If you enable this you need to add firebase_credentials.json to your config folder'
+            comment: 'Enable Firebase Authentication, If Firebase Credentials are empty below you need to add firebase_credentials.json to your config folder'
+        firebase_credentials:
+            label: 'Firebase Credentials'
+            tab: 'Firebase'
+            span: full
+            type: textarea
+            size: large
+            comment: 'You need to Enable firebase authentication. This should be in json format. Contents inside firebase_credentials.json'
