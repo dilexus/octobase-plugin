@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use RainLab\User\Facades\Auth;
 use October\Rain\Auth\Models\User;
 use Dilexus\Octobase\Models\Settings;
+use Dilexus\Octobase\Classes\Api\Lib\Utils;
 
 Route::prefix('octobase')->group(function () {
 
@@ -181,7 +182,7 @@ Route::prefix('octobase')->group(function () {
             $authUser = Auth::findUserByEmail($user->email);
             if (!$authUser) {
                 $require_activation = Settings::get('require_activation');
-                $randomPass = randomPassword();
+                $randomPass = Utils::randomPassword();
                 list($first_name, $last_name) = explode(" ", $user->displayName, 2);
 
                 $payload = [
@@ -239,15 +240,3 @@ Route::prefix('octobase')->group(function () {
     });
 
 });
-
-function randomPassword()
-{
-    $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-    $pass = []; //remember to declare $pass as an array
-    $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
-    for ($i = 0; $i < 8; $i++) {
-        $n = rand(0, $alphaLength);
-        $pass[] = $alphabet[$n];
-    }
-    return implode($pass); //turn the array into a string
-}
