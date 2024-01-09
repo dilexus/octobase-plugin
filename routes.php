@@ -203,7 +203,13 @@ Route::prefix('octobase')->group(function () {
                 $authUser = Auth::register($payload, $require_activation);
                 Auth::setUser($authUser);
                 Auth::login($authUser, true);
-                $authUser->groups()->attach(2);
+                $groups = Settings::get('default_groups');
+                if ($groups) {
+                    $groups = array_map('intval', explode(',', $groups));
+                } else {
+                    $groups = [2];
+                }
+                $authUser->groups()->attach($groups);
                 $avatar = $authUser['avatar'];
                 if ($avatar) {
                     $avatar = ['path' => $avatar['path'], 'extenstion' => $avatar['extension']];

@@ -10,6 +10,12 @@ tabs:
             span: full
             type: checkbox
             comment: 'Activate user upon registration'
+        default_groups:
+            label: 'Groups Registered by Default'
+            span: full
+            type: text
+            default: '2'
+            comment: 'Groups Registered by Default Ids in Comma Seperated Values (eg: 2,3). Default is 2'
         enable_firebase_authentication:
             label: 'Enable Firebase Authentication'
             tab: 'Firebase'
