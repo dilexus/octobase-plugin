@@ -127,7 +127,7 @@ You get the user information from this API. You need to send the token in the Au
 GET /octobase/user
 
 #### Firebase Authentication
-You can authenticate it with Firebase by sending ID token to following API. It required a form parameter called token (eg: token=<Firebase User ID Token>). It will create a record in Users if the user is not there or return the existing user with Octobase token. You can use Octobease token after that to call APIs. Firebase can be configured in Octobase Settings
+You can authenticate it with Firebase by sending ID token to following API. It required a form parameter called token (eg: token=[Firebase User ID Token]). It will create a record in Users if the user is not there or return the existing user with Octobase token. You can use Octobease token after that to call APIs. Firebase can be configured in Octobase Settings
 
 POST /octobase/login/firebase
 
