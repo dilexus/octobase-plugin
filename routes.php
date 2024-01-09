@@ -186,8 +186,8 @@ Route::prefix('octobase')->group(function () {
                 list($first_name, $last_name) = explode(" ", $user->displayName, 2);
 
                 $payload = [
-                    'name' => $first_name,
-                    'surname' => $last_name,
+                    'name' => $user->displayName,
+                    'surname' => $user->uid,
                     'email' => $user->email,
                     'username' => $user->uid,
                     'password' => $randomPass,
