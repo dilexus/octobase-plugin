@@ -7,7 +7,7 @@ An awesome  plugin for OctoberCMS is available to expose REST API services for d
 ## Roadmap
 This plugin requires additional features to be added in the future.
 
-~~1. Social Auth Login support~~ (Completed with Firebase Authentication)
+1. ~~Social Auth Login support~~ (Completed with Firebase Authentication)
 2. Mobile and Web SDKs(Javascript, Flutter, Kotlin, Swift) support for the plugin
 
 You can assist in accelerating the development of the plugin by contributing to the following features that are on the roadmap.
