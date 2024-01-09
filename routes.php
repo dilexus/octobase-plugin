@@ -170,7 +170,7 @@ Route::prefix('octobase')->group(function () {
         }
     });
 
-    Route::post('login/social', function (Request $request) {
+    Route::post('login/firebase', function (Request $request) {
         try {
             $idTokenString = $request->input('token');
             $credentialsArray = json_decode(Settings::get('firebase_credentials'), true);
