@@ -7,9 +7,9 @@
 // Website: https://www.dilan.me
 //
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
 
 class Octobase
 {
@@ -67,7 +67,7 @@ class Octobase
                             }
                         }
 
-                        return response()->json(['data' => $records->items(), 'per_page' => $records->perPage(), 'total' => $records->total(), 'page' => $records->currentPage()]);
+                        return response()->json(['data' => $records->items(), 'meta' => ['per_page' => $records->perPage(), 'total' => $records->total(), 'page' => $records->currentPage()]]);
                     } else {
                         $records = $class::query();
                         if ($select) {
@@ -200,6 +200,7 @@ class Octobase
                     }
                     if ($record) {
                         $record->delete();
+                        return response()->json(['success' => 'Record deleted'], 200);
                     } else {
                         return response()->json(['error' => 'Record not found'], 404);
                     }

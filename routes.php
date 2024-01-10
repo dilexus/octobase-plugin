@@ -16,8 +16,29 @@ Route::prefix('octobase')->group(function () {
 
     Route::post('login', function (Request $request) {
         try {
+            $user = Auth::authenticate([
+                'login' => $request->input('email'),
+                'password' => $request->input('password'),
+            ]);
+            if (!$user) {
+                return response()->json(['error' => 'No user exists for authentication purposes'], 401);
+            }
+            return response()->json(['first_name' => $user['name'],
+                'last_name' => $user['surname'],
+                'email' => $user['email'],
+                'username' => $user['username'],
+                'groups' => $user['groups']->lists('code'),
+                'token' => hash('sha256', $user['persist_code']),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    });
+
+    Route::post('login/basic', function (Request $request) {
+        try {
             $authroization = $request->header('Authorization');
-            $token = str_replace('Bearer ', '', $authroization);
+            $token = str_replace('Basic ', '', $authroization);
             $credentials = explode(':', base64_decode($token));
             $username = $credentials[0];
             $password = $credentials[1];
@@ -89,7 +110,7 @@ Route::prefix('octobase')->group(function () {
                     'groups' => $authUser['groups']->lists('code'),
                     'avatar' => $avatar,
                     'is_new' => true,
-                    'token' => hash('sha256', $authUser['persist_code'])]
+                    'token' => hash('sha256', $authUser['persist_code'])], 201
                 );
             }
         } catch (\Exception $e) {
@@ -222,7 +243,7 @@ Route::prefix('octobase')->group(function () {
                     'groups' => $authUser['groups']->lists('code'),
                     'avatar' => $avatar,
                     'is_new' => true,
-                    'token' => hash('sha256', $authUser['persist_code'])]
+                    'token' => hash('sha256', $authUser['persist_code'])], 201
                 );
             } else {
                 Auth::setUser($authUser);
