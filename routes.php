@@ -78,6 +78,20 @@ Route::prefix('octobase')->group(function () {
         }
     });
 
+    Route::post('check', function (Request $request) {
+        try {
+            $authroization = $request->header('Authorization');
+            $token = str_replace('Bearer ', '', $authroization);
+            $user = User::whereRaw('SHA2(persist_code, 256) = ?', [$token])->first();
+            if (!$user) {
+                return response()->json(['error' => 'Token Expired'], 404);
+            }
+            return response()->json(['success' => 'Token Exists'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    });
+
     Route::post('register', function (Request $request) {
         try {
             $registration_disabled = Settings::get('registration_disabled');
@@ -146,7 +160,7 @@ Route::prefix('octobase')->group(function () {
                 );
 
             } else {
-                return response()->json(['error' => 'User not Found for the given token'], 403);
+                return response()->json(['error' => 'User not Found for the given token'], 404);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);

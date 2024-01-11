@@ -8,8 +8,8 @@
 //
 
 use Closure;
-use October\Rain\Auth\Models\User;
 use RainLab\User\Facades\Auth;
+use October\Rain\Auth\Models\User;
 
 class OctobaseAuthAdmin
 {
@@ -19,7 +19,7 @@ class OctobaseAuthAdmin
         $token = str_replace('Bearer ', '', $authroization);
         $user = User::whereRaw('SHA2(persist_code, 256) = ?', [$token])->first();
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized Accesss'], 401);
+            return response()->json(['error' => 'Unauthorized Access'], 401);
         }
         $authUser = Auth::findUserById($user->id);
         $groups = $authUser['groups']->lists('code');
@@ -28,7 +28,7 @@ class OctobaseAuthAdmin
             $request->attributes->add(['own' => 'false']);
             return $next($request);
         } else {
-            return response()->json(['error' => 'Unauthorized Accesss'], 401);
+            return response()->json(['error' => 'Fobidden Access, Admins Only'], 403);
         }
 
     }
