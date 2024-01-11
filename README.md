@@ -122,9 +122,14 @@ You can send the SHA256 token and get a new token from refresh API. You need to 
 POST /octobase/refresh
 
 #### User
-You get the user information from this API. You need to send the token in the Authtorization heder as a Bearer token
+You get the user information from this API. You need to send the token in the Authtorization header as a Bearer token
 
 GET /octobase/user
+
+#### Check
+You get the status of the token whether it is exist or not. You need to send the token in the Authtorization header as a Bearer token
+
+GET /octobase/check
 
 #### Firebase Authentication
 You can authenticate it with Firebase by sending ID token to following API. It required a form parameter called token (eg: token=[Firebase User ID Token]). It will create a record in Users if the user is not there or return the existing user with Octobase token. You can use Octobease token after that to call APIs. Firebase can be configured in Octobase Settings
