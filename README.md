@@ -89,30 +89,30 @@ This will only allow list API to public, by default other APIs are restricted to
 
 ## Middleware
 
-#### ObRestricted
+#### obRestricted
 Restrict Anyone from acccessing the APIs
 
-#### ObRegistred
+#### obRegistered
 Only registered users will be allowed to access the APIs. If you want to restrict registered users to only access their own data, add ":true" after the middleware name. For example, [obRegistered:true]. However, please ensure that the table has a user_id column if you choose to do so.
 
-#### ObAdmin
+#### obAdmin
 Only registered Admin will be allowed to access the APIs. Please make sure to create a Admin user group with the code 'admin' in the Groups section of the Users Plugin and user has been assigned to admin group. Admin has permission to do any operations on the APIs
 
-#### ObPublic
+#### obPublic
 Anyone who calls the APIs has unrestricted access to them.
 
-#### ObGroups
+#### obGroups
 Only the defined groups can access the APIs. For example, if you want to restrict access to the groups "admin" and "api", you can add them as follows using a colon: [obGroups:admin:api].
 
 ## Authentication and Authrorization
 
 ### Authentication
-You can authenticate the API using following API. You have to send the base64 encoded username:password in a Authtorization heder as a Bearer token
+You can authenticate the API using following API. You have to send login, password form parameters. login is the user's email
 
 POST /octobase/login
 
 #### Registration
-You can register the user using following API. You need to send first_name, last_name, email, password, confirm_password as form parameter. You can disable this feature from Octobase plugin settings. Also You can enable the auto activation of the user from the plugin settings.
+You can register the user using following API. You need to send first_name, last_name, email, password, confirm_password as form parameters. You can disable this feature from Octobase plugin settings. Also You can enable the auto activation of the user from the plugin settings.
 
 POST /octobase/register
 
