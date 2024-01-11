@@ -4,6 +4,9 @@
 ## Introduction
 An awesome  plugin for OctoberCMS is available to expose REST API services for data access from anywhere. This plugin enables the creation of CRUD operations for REST services and allows the creation of custom REST services with middleware support for API authorization. Additionally, the plugin provides an API for OctoberCMS frontend users to perform actions such as login, registration, token refresh, and retrieval of user information. Bearer API tokens are utilized for API authorization within this plugin.
 
+## Flutter SDK
+You can connect the APIs of your Octobase Easily with Flutter SDK here https://pub.dev/packages/octobase_flutter
+
 ## Roadmap
 This plugin requires additional features to be added in the future.
 
