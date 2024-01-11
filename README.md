@@ -10,6 +10,9 @@ Tested in PHP 8.2 and above. You need to enable sodium extension in the server i
 ## Flutter SDK
 You can connect the APIs of your Octobase Easily with Flutter SDK here https://pub.dev/packages/octobase_flutter
 
+## Manual Installation
+php artisan plugin:install Dilexus.Octobase --from=https://github.com/chaturadilan/octobase-plugin.git
+
 ## Roadmap
 This plugin requires additional features to be added in the future.
 
