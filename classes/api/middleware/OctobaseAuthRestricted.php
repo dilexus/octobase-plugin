@@ -15,6 +15,6 @@ class OctobaseAuthRestricted
     public function handle($request, Closure $next)
     {
 
-        return Response::make('{"message" : "Access Denied"}', 403, ['Content-Type' => 'application/json']);
+        return Response::make('{"error" : "Access Denied"}', 403, ['Content-Type' => 'application/json']);
     }
 }
