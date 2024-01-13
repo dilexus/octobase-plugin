@@ -23,7 +23,9 @@ Route::prefix('octobase')->group(function () {
             if (!$user) {
                 return response()->json(['error' => 'No user exists for authentication purposes'], 401);
             }
-            return response()->json(['first_name' => $user['name'],
+            return response()->json([
+                'id' => $user['id'],
+                'first_name' => $user['name'],
                 'last_name' => $user['surname'],
                 'email' => $user['email'],
                 'username' => $user['username'],
@@ -50,7 +52,9 @@ Route::prefix('octobase')->group(function () {
             if (!$user) {
                 return response()->json(['error' => 'No user exists for authentication purposes'], 401);
             }
-            return response()->json(['first_name' => $user['name'],
+            return response()->json([
+                'id' => $user['id'],
+                'first_name' => $user['name'],
                 'last_name' => $user['surname'],
                 'email' => $user['email'],
                 'username' => $user['username'],
@@ -116,7 +120,9 @@ Route::prefix('octobase')->group(function () {
                 if ($avatar) {
                     $avatar = ['path' => $avatar['path'], 'extenstion' => $avatar['extension']];
                 }
-                return response()->json(['first_name' => $authUser['name'],
+                return response()->json([
+                    'id' => $authUser['id'],
+                    'first_name' => $authUser['name'],
                     'last_name' => $authUser['surname'],
                     'email' => $authUser['email'],
                     'username' => $authUser['username'],
@@ -149,7 +155,9 @@ Route::prefix('octobase')->group(function () {
                 if ($avatar) {
                     $avatar = ['path' => $avatar['path'], 'extenstion' => $avatar['extension']];
                 }
-                return response()->json(['first_name' => $user['name'],
+                return response()->json([
+                    'id' => $user['id'],
+                    'first_name' => $user['name'],
                     'last_name' => $authUser['surname'],
                     'email' => $authUser['email'],
                     'username' => $authUser['username'],
@@ -187,7 +195,9 @@ Route::prefix('octobase')->group(function () {
                 if ($avatar) {
                     $avatar = ['path' => $avatar['path'], 'extenstion' => $avatar['extension']];
                 }
-                return response()->json(['first_name' => $authUser['name'],
+                return response()->json([
+                    'id' => $authUser['id'],
+                    'first_name' => $authUser['name'],
                     'last_name' => $authUser['surname'],
                     'email' => $authUser['email'],
                     'username' => $authUser['username'],
@@ -249,7 +259,9 @@ Route::prefix('octobase')->group(function () {
                 if ($avatar) {
                     $avatar = ['path' => $avatar['path'], 'extenstion' => $avatar['extension']];
                 }
-                return response()->json(['first_name' => $authUser['name'],
+                return response()->json([
+                    'id' => $authUser['id'],
+                    'first_name' => $authUser['name'],
                     'last_name' => $authUser['surname'],
                     'email' => $authUser['email'],
                     'username' => $authUser['username'],
@@ -267,7 +279,9 @@ Route::prefix('octobase')->group(function () {
                     if ($avatar) {
                         $avatar = ['path' => $avatar['path'], 'extenstion' => $avatar['extension']];
                     }
-                    return response()->json(['first_name' => $authUser['name'],
+                    return response()->json([
+                        'id' => $authUser['id'],
+                        'first_name' => $authUser['name'],
                         'last_name' => $authUser['surname'],
                         'email' => $authUser['email'],
                         'username' => $authUser['username'],
