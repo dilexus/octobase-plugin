@@ -156,8 +156,8 @@ Route::prefix('octobase')->group(function () {
                     $avatar = ['path' => $avatar['path'], 'extenstion' => $avatar['extension']];
                 }
                 return response()->json([
-                    'id' => $user['id'],
-                    'first_name' => $user['name'],
+                    'id' => $authUser['id'],
+                    'first_name' => $authUser['name'],
                     'last_name' => $authUser['surname'],
                     'email' => $authUser['email'],
                     'username' => $authUser['username'],
