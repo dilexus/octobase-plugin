@@ -292,11 +292,13 @@ Route::prefix('octobase')->group(function () {
                     );
 
                 } else {
+                    Auth::logout();
                     return response()->json(['error' => 'User Not Found for the given token'], 400);
                 }
             }
 
         } catch (\Exception $e) {
+            Auth::logout();
             return response()->json(['error' => $e->getMessage()], 400);
         }
     });
