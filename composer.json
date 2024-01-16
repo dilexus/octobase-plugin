@@ -5,7 +5,7 @@
     "require": {
         "composer/installers": "~1.0",
         "rainlab/user-plugin": ">=2.1.0",
-        "kreait/firebase-php": "7.8.0"
+        "kreait/firebase-php": "^7.9.1"
     },
     "homepage": "https://dilan.me",
     "keywords": [
