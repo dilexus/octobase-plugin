@@ -26,9 +26,6 @@
     "config": {
         "allow-plugins": {
             "composer/installers": false
-        },
-        "platform": {
-            "ext-sodium": "1.0.0"
         }
     }
 }

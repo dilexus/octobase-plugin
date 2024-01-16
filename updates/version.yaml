@@ -6,3 +6,4 @@ v1.4.0: Added Firebase Auth and default groups
 v1.5.0: Changes to Login API and Error code, added new token check API
 v1.6.0: Added id for user
 v1.7.0: Fixes for Firebase API
+v1.8.0: Fixes for sodium extension
