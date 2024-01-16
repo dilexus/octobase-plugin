@@ -1,6 +1,6 @@
 <?php return [
     'plugin' => [
         'name' => 'OctoBase',
-        'description' => ''
-    ]
+        'description' => 'REST API Services Plugin for OctoberCMS',
+    ],
 ];
