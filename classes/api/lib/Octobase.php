@@ -7,10 +7,10 @@
 // Website: https://www.dilan.me
 //
 
-use Illuminate\Support\Str;
+use Dilexus\Octobase\Models\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Dilexus\Octobase\Models\Settings;
+use Illuminate\Support\Str;
 
 class Octobase
 {
@@ -36,7 +36,7 @@ class Octobase
                     $where = $request->input('where');
                     $order = $request->input('order');
                     $page = $request->input('page');
-                    $perPage = $request->input('perPage') ?? 10;
+                    $perPage = $request->input('limit') ?? 10;
                     $list_with_data = Settings::get('list_with_data');
 
                     $locale = $request->header('Content-Language');
@@ -72,7 +72,7 @@ class Octobase
                         if ($list_with_data) {
                             return response()->json(['data' => $records->items(), 'meta' => ['per_page' => $records->perPage(), 'total' => $records->total(), 'page' => $records->currentPage()]]);
                         } else {
-                            return response()->json($records->items(), 200,['X-Total-Count' => $records->total(), 'X-Filtered-Count' => $records->perPage(), 'X-Page-Count' => $records->currentPage()]);
+                            return response()->json($records->items(), 200, ['X-Total-Count' => $records->total(), 'X-Filtered-Count' => $records->perPage(), 'X-Page-Count' => $records->currentPage()]);
                         }
 
                     } else {
