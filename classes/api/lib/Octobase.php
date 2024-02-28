@@ -10,6 +10,7 @@
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Dilexus\Octobase\Models\Settings;
 
 class Octobase
 {
@@ -36,6 +37,7 @@ class Octobase
                     $order = $request->input('order');
                     $page = $request->input('page');
                     $perPage = $request->input('perPage') ?? 10;
+                    $list_with_data = Settings::get('list_with_data');
 
                     $locale = $request->header('Content-Language');
                     if (empty($locale)) {
@@ -67,7 +69,12 @@ class Octobase
                             }
                         }
 
-                        return response()->json(['data' => $records->items(), 'meta' => ['per_page' => $records->perPage(), 'total' => $records->total(), 'page' => $records->currentPage()]]);
+                        if ($list_with_data) {
+                            return response()->json(['data' => $records->items(), 'meta' => ['per_page' => $records->perPage(), 'total' => $records->total(), 'page' => $records->currentPage()]]);
+                        } else {
+                            return response()->json($records->items(), 200,['X-Total-Count' => $records->total(), 'X-Filtered-Count' => $records->perPage(), 'X-Page-Count' => $records->currentPage()]);
+                        }
+
                     } else {
                         $records = $class::query();
                         if ($select) {
@@ -92,7 +99,12 @@ class Octobase
                                 $record->translateContext($locale);
                             }
                         }
-                        return response()->json(['data' => $records]);
+                        if ($list_with_data) {
+                            return response()->json(['data' => $records]);
+                        } else {
+                            return response()->json($records);
+                        }
+
                     }
                 } catch (\Exception $e) {
                     return response()->json(['error' => $e->getMessage()], 400);

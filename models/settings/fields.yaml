@@ -10,6 +10,11 @@ tabs:
             span: full
             type: checkbox
             comment: 'Activate user upon registration'
+        list_with_data:
+            label: 'Lists in a Data Object'
+            span: full
+            type: checkbox
+            comment: 'Return lists wrapped in a Data Object'
         default_groups:
             label: 'Groups Registered by Default'
             span: full
