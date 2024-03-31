@@ -148,6 +148,10 @@ POST /octobase/login/firebase
 ### Authrorization
 To Authorize all your APIs you need to send the token in the Authtorization heder as a bearer token
 
+### Debug mode Settings
+If you are using APIs solely for testing purposes, you can enable the debug mode to test them without authentication and authorization.
+
+
 ## Create your own APIs with Middleware
 You can attach Octobase middleware to your own APIs as well. As an example.
 

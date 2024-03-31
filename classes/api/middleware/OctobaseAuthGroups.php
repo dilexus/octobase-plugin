@@ -10,11 +10,17 @@
 use Closure;
 use RainLab\User\Facades\Auth;
 use October\Rain\Auth\Models\User;
+use Dilexus\Octobase\Models\Settings;
 
 class OctobaseAuthGroups
 {
     public function handle($request, Closure $next, $groups, $own = 'false')
     {
+
+        if (Settings::get('octobase_debug_on')) {
+            return $next($request);
+        }
+
         $authGroups = explode(':', $groups);
         $authroization = $request->header('Authorization');
         $token = str_replace('Bearer ', '', $authroization);

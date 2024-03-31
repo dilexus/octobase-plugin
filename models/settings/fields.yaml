@@ -1,36 +1,41 @@
 tabs:
     fields:
+        octobase_debug_on:
+            label: "Debug Mode on Octobase"
+            span: full
+            type: checkbox
+            comment: "Turn on and off Octobase Debug Mode, so that you test APIs without authorization. WARNING: Do not use this in production"
         registration_disabled:
-            label: 'Disable Registration'
+            label: "Disable Registration"
             span: full
             type: checkbox
-            comment: 'Disable user registration through the API'
+            comment: "Disable user registration through the API"
         require_activation:
-            label: 'Activiate User'
+            label: "Activiate User"
             span: full
             type: checkbox
-            comment: 'Activate user upon registration'
+            comment: "Activate user upon registration"
         list_with_data:
-            label: 'Lists in a Data Object'
+            label: "Lists in a Data Object"
             span: full
             type: checkbox
-            comment: 'Return lists wrapped in a Data Object'
+            comment: "Return lists wrapped in a Data Object"
         default_groups:
-            label: 'Groups Registered by Default'
+            label: "Groups Registered by Default"
             span: full
             type: text
-            default: '2'
-            comment: 'Groups Registered by Default Ids in Comma Seperated Values (eg: 2,3). Default is 2'
+            default: "2"
+            comment: "Groups Registered by Default Ids in Comma Seperated Values (eg: 2,3). Default is 2"
         enable_firebase_authentication:
-            label: 'Enable Firebase Authentication'
-            tab: 'Firebase'
+            label: "Enable Firebase Authentication"
+            tab: "Firebase"
             span: full
             type: checkbox
-            comment: 'Enable Firebase Authentication, If Firebase Credentials are empty below you need to add firebase_credentials.json to your config folder'
+            comment: "Enable Firebase Authentication, If Firebase Credentials are empty below you need to add firebase_credentials.json to your config folder"
         firebase_credentials:
-            label: 'Firebase Credentials'
-            tab: 'Firebase'
+            label: "Firebase Credentials"
+            tab: "Firebase"
             span: full
             type: textarea
             size: large
-            comment: 'You need to Enable firebase authentication. This should be in json format. Contents inside firebase_credentials.json'
+            comment: "You need to Enable firebase authentication. This should be in json format. Contents inside firebase_credentials.json"

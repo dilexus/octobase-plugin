@@ -8,13 +8,16 @@
 //
 
 use Closure;
+use Dilexus\Octobase\Models\Settings;
 use Response;
 
 class OctobaseAuthRestricted
 {
     public function handle($request, Closure $next)
     {
-
+        if (Settings::get('octobase_debug_on')) {
+            return $next($request);
+        }
         return Response::make('{"error" : "Forbidden Access to All"}', 403, ['Content-Type' => 'application/json']);
     }
 }

@@ -16,3 +16,4 @@ v1.14.0: Update Firebase Version
 v1.15.0: Added Description
 v1.16.0: Added Octobase data object support
 v1.17.0: Change perPage to Limit
+v1.18.0: Added API Debug mode
