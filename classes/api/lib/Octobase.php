@@ -96,7 +96,7 @@ class Octobase
                         }
 
                         if (!empty($function)) {
-                            $records = $function($records, 'list');
+                            $records = $function($request, $records, 'list');
                         }
 
                         $records = $records->get();
@@ -143,7 +143,7 @@ class Octobase
                     }
 
                     if (!empty($function)) {
-                        $records = $function($records, 'one');
+                        $records = $function($request, $records, 'one');
                     }
 
                     $record = $records->find($id);
@@ -179,7 +179,7 @@ class Octobase
                     $record->refresh();
 
                     if (!empty($function)) {
-                        $record = $function($record, 'add');
+                        $record = $function($request, $record, 'add');
                     }
 
                     return response()->json($record, 201);
@@ -211,7 +211,7 @@ class Octobase
                         $record->refresh();
 
                         if (!empty($function)) {
-                            $record = $function($record, 'update');
+                            $record = $function($request, $record, 'update');
                         }
 
                         return response()->json($record);

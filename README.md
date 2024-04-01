@@ -127,7 +127,7 @@ If you want to modify the output before it is sent to the client, you can use a 
 ```
  (new Octobase)->crud('Dilexus\School\Models\Student',
         ['obPublic'],
-        function :function ($records, $method) {
+        function :function ($request, $records, $method) {
             return $records->select('name');
         }
  );
