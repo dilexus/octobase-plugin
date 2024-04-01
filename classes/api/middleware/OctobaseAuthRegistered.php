@@ -8,9 +8,9 @@
 //
 
 use Closure;
-use Dilexus\Octobase\Models\Settings;
-use October\Rain\Auth\Models\User;
 use RainLab\User\Facades\Auth;
+use October\Rain\Auth\Models\User;
+use Dilexus\Octobase\Models\Settings;
 
 class OctobaseAuthRegistered
 {
@@ -34,7 +34,7 @@ class OctobaseAuthRegistered
             $request->attributes->add(['own' => $own]);
             return $next($request);
         } else {
-            return response()->json(['error' => 'Forbidden Access, Registered Users Only'], 403);
+            return response()->json(['error' => 'Unauthorized Access, Registered Users Only'], 401);
         }
 
     }

@@ -8,9 +8,9 @@
 //
 
 use Closure;
-use RainLab\User\Facades\Auth;
-use October\Rain\Auth\Models\User;
 use Dilexus\Octobase\Models\Settings;
+use October\Rain\Auth\Models\User;
+use RainLab\User\Facades\Auth;
 
 class OctobaseAuthGroups
 {
@@ -32,7 +32,7 @@ class OctobaseAuthGroups
         $groups = $authUser['groups']->lists('code');
         $commonGroups = array_intersect($groups, $authGroups);
         if (empty($commonGroups)) {
-            return response()->json(['error' => 'Fobidden Access, Specific Groups Only'], 403);
+            return response()->json(['error' => 'Unauthorized Access, Specific Groups Only'], 401);
         }
         if (in_array('admin', $groups)) {
             $request->merge(['userId' => $user['id']]);

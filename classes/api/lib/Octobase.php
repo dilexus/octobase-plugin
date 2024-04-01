@@ -7,10 +7,10 @@
 // Website: https://www.dilan.me
 //
 
-use Dilexus\Octobase\Models\Settings;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Dilexus\Octobase\Models\Settings;
+use Illuminate\Support\Facades\Route;
 
 class Octobase
 {
@@ -19,15 +19,17 @@ class Octobase
         $viewM = ['obRestricted'],
         $createM = ['obRestricted'],
         $updateM = ['obRestricted'],
-        $deleteM = ['obRestricted']) {
+        $deleteM = ['obRestricted'],
+        $function = null,
+    ) {
 
         $model = explode("\\", $class);
         $model = end($model);
         $controller = Str::plural($model);
 
-        Route::prefix(strtolower($controller))->group(function () use ($class, $listM, $viewM, $createM, $updateM, $deleteM) {
+        Route::prefix(strtolower($controller))->group(function () use ($class, $listM, $viewM, $createM, $updateM, $deleteM, $function) {
 
-            Route::get('', function (Request $request) use ($class) {
+            Route::get('', function (Request $request) use ($class, $function) {
                 try {
                     $userId = $request->get('userId');
                     $own = $request->get('own');
@@ -92,6 +94,11 @@ class Octobase
                         if ($order) {
                             $records->orderByRaw($order);
                         }
+
+                        if (!empty($function)) {
+                            $records = $function($records, 'list');
+                        }
+
                         $records = $records->get();
 
                         if ($locale) {
@@ -111,7 +118,7 @@ class Octobase
                 }
             })->middleware($listM);
 
-            Route::get('{id}', function (Request $request, $id) use ($class) {
+            Route::get('{id}', function (Request $request, $id) use ($class, $function) {
                 try {
                     $userId = $request->get('userId');
                     $own = $request->get('own');
@@ -135,6 +142,10 @@ class Octobase
                         $records->whereRaw('user_id = ' . $userId);
                     }
 
+                    if (!empty($function)) {
+                        $records = $function($records, 'one');
+                    }
+
                     $record = $records->find($id);
 
                     if ($locale) {
@@ -151,26 +162,33 @@ class Octobase
                 }
             })->middleware($viewM);
 
-            Route::post('', function (Request $request) use ($class) {
+            Route::post('', function (Request $request) use ($class, $function) {
                 try {
                     $userId = $request->get('userId');
                     $inputs = $request->all();
                     $record = new $class;
+
                     foreach ($inputs as $key => $value) {
                         $record->fill([$key => $value]);
                     }
                     if (!empty($userId)) {
                         $record->fill(['user_id' => $userId]);
                     }
+
                     $record->save();
                     $record->refresh();
+
+                    if (!empty($function)) {
+                        $record = $function($record, 'add');
+                    }
+
                     return response()->json($record, 201);
                 } catch (\Exception $e) {
                     return response()->json(['error' => $e->getMessage()], 400);
                 }
             })->middleware($createM);;
 
-            Route::post('{id}', function (Request $request, $id) use ($class) {
+            Route::post('{id}', function (Request $request, $id) use ($class, $function) {
                 try {
                     $userId = $request->get('userId');
                     $own = $request->get('own');
@@ -191,6 +209,11 @@ class Octobase
 
                         $record->update($update);
                         $record->refresh();
+
+                        if (!empty($function)) {
+                            $record = $function($record, 'update');
+                        }
+
                         return response()->json($record);
                     } else {
                         return response()->json(['error' => 'Record not found'], 404);

@@ -18,6 +18,6 @@ class OctobaseAuthRestricted
         if (Settings::get('octobase_debug_on')) {
             return $next($request);
         }
-        return Response::make('{"error" : "Forbidden Access to All"}', 403, ['Content-Type' => 'application/json']);
+        return Response::make('{"error" : "Restricted Access"}', 403, ['Content-Type' => 'application/json']);
     }
 }

@@ -8,9 +8,9 @@
 //
 
 use Closure;
-use Dilexus\Octobase\Models\Settings;
-use October\Rain\Auth\Models\User;
 use RainLab\User\Facades\Auth;
+use October\Rain\Auth\Models\User;
+use Dilexus\Octobase\Models\Settings;
 
 class OctobaseAuthAdmin
 {
@@ -33,7 +33,7 @@ class OctobaseAuthAdmin
             $request->attributes->add(['own' => 'false']);
             return $next($request);
         } else {
-            return response()->json(['error' => 'Fobidden Access, Admins Only'], 403);
+            return response()->json(['error' => 'Unauthorized Access, Admins Only'], 401);
         }
 
     }

@@ -113,6 +113,24 @@ Anyone who calls the APIs has unrestricted access to them.
 #### obGroups
 Only the defined groups can access the APIs. For example, if you want to restrict access to the groups "admin" and "api", you can add them as follows using a colon: [obGroups:admin:api].
 
+## Custom Functions
+If you want to modify the output before it is sent to the client, you can use a custom function like below
+
+```
+(new Octobase)->crud('Dilexus\School\Models\Student',
+        ['obPublic'],
+        ['obPublic'],
+        ['obPublic'],
+        ['obPublic'],
+        ['obPublic'],
+        function ($records, $method) {
+            return $records->select('name');
+        }
+    );
+
+```
+
+
 ## Authentication and Authrorization
 
 ### Authentication
