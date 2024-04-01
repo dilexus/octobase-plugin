@@ -117,16 +117,12 @@ Only the defined groups can access the APIs. For example, if you want to restric
 If you want to modify the output before it is sent to the client, you can use a custom function like below
 
 ```
-(new Octobase)->crud('Dilexus\School\Models\Student',
+ (new Octobase)->crud('Dilexus\School\Models\Student',
         ['obPublic'],
-        ['obPublic'],
-        ['obPublic'],
-        ['obPublic'],
-        ['obPublic'],
-        function ($records, $method) {
+        function :function ($records, $method) {
             return $records->select('name');
         }
-    );
+ );
 
 ```
 
