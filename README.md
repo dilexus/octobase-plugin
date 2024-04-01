@@ -174,7 +174,7 @@ Route::prefix('api/school/v1')->group(function () {
 
     Route::get('student/{id}/getInfo', function (Request $request, $id)  {
        // Logic Here
-    })->middleware(['obregistered']);
+    })->middleware(['obRegistered']);
 
 });
 
