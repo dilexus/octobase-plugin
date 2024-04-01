@@ -53,7 +53,15 @@ use Dilexus\Octobase\Classes\Api\Lib\Octobase;
 
  ```
 
-Here ObPublic is a middlewere that expose your CRUD APIs to public.
+Here obPublic is a middlewere that expose your CRUD APIs to public.
+
+More Examples
+
+```
+ (new Octobase)->crud('Dilexus\School\Models\Student',
+        createM: ['obPublic'], // Enable only the add (create) API
+    );
+```
 
 ## Operations
 
