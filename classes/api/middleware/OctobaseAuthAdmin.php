@@ -33,7 +33,7 @@ class OctobaseAuthAdmin
             $request->attributes->add(['own' => 'false']);
             return $next($request);
         } else {
-            return response()->json(['error' => 'Unauthorized Access, Admins Only'], 401);
+            return response()->json(['error' => 'Fobidden Access, Admins Only'], 403);
         }
 
     }

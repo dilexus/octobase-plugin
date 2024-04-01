@@ -32,7 +32,7 @@ class OctobaseAuthGroups
         $groups = $authUser['groups']->lists('code');
         $commonGroups = array_intersect($groups, $authGroups);
         if (empty($commonGroups)) {
-            return response()->json(['error' => 'Unauthorized Access, Specific Groups Only'], 401);
+            return response()->json(['error' => 'Fobidden Access, Specific Groups Only'], 403);
         }
         if (in_array('admin', $groups)) {
             $request->merge(['userId' => $user['id']]);
