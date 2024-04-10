@@ -5,6 +5,12 @@ tabs:
             span: full
             type: checkbox
             comment: "Turn on and off Octobase Debug Mode, so that you test APIs without authorization. WARNING: Do not use this in production"
+        octobase_debug_user_id:
+            label: "Debug User Id"
+            span: left
+            type: text
+            default: "1"
+            comment: "This only works if Debug Mode is on. This is the user id that will be retuned in debugging"
         registration_disabled:
             label: "Disable Registration"
             span: full
