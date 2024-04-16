@@ -19,3 +19,4 @@ v1.17.0: Change perPage to Limit
 v1.18.0: Added API Debug mode
 v1.19.0: Added Custom Functions
 v1.20.0: Added Debug User Id in Settings
+v1.21.0: Added User Id for Debug groups

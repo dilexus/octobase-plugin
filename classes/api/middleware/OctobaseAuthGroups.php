@@ -8,9 +8,9 @@
 //
 
 use Closure;
-use Dilexus\Octobase\Models\Settings;
-use October\Rain\Auth\Models\User;
 use RainLab\User\Facades\Auth;
+use October\Rain\Auth\Models\User;
+use Dilexus\Octobase\Models\Settings;
 
 class OctobaseAuthGroups
 {
@@ -18,6 +18,8 @@ class OctobaseAuthGroups
     {
 
         if (Settings::get('octobase_debug_on')) {
+            $request->attributes->add(['userId' => Settings::get('octobase_debug_user_id')]);
+            $request->attributes->add(['own' => $own]);
             return $next($request);
         }
 
