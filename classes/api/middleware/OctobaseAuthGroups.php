@@ -42,18 +42,16 @@ class OctobaseAuthGroups
         $authUser = Auth::findUserById($user->id);
         $regGroups = $authUser['groups']->lists('code');
         $commonGroups = array_intersect($regGroups, $authGroups);
+
         if (empty($commonGroups)) {
             return response()->json(['error' => 'Fobidden Access, Specific Groups Only'], 403);
         }
-        if (in_array('admin', $regGroups)) {
-            $request->attributes->add(['groups' => $regGroups]);
-            $request->attributes->add(['allowedGroups' => $authGroups]);
-            $request->merge(['userId' => $user['id']]);
-            $request->attributes->add(['own' => $own]);
-            return $next($request);
-        } else {
-            return response()->json(['error' => 'Unauthorized Accesss'], 401);
-        }
+
+        $request->attributes->add(['groups' => $regGroups]);
+        $request->attributes->add(['allowedGroups' => $authGroups]);
+        $request->merge(['userId' => $user['id']]);
+        $request->attributes->add(['own' => $own]);
+        return $next($request);
 
     }
 }
