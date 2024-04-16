@@ -18,7 +18,16 @@ class OctobaseAuthGroups
     {
 
         if (Settings::get('octobase_debug_on')) {
-            $request->attributes->add(['userId' => Settings::get('octobase_debug_user_id')]);
+            $userId = Settings::get('octobase_debug_user_id');
+            $request->attributes->add(['userId' => $userId]);
+            $authUser = Auth::findUserById($userId);
+            if (!$authUser) {
+                return response()->json(['error' => 'User Not Found'], 401);
+            }
+            $regGroups = $authUser['groups']->lists('code');
+            $request->attributes->add(['groups' => $regGroups]);
+            $authGroups = explode(':', $groups);
+            $request->attributes->add(['allowedGroups' => $authGroups]);
             $request->attributes->add(['own' => $own]);
             return $next($request);
         }
@@ -31,12 +40,14 @@ class OctobaseAuthGroups
             return response()->json(['error' => 'Unauthorized Access'], 401);
         }
         $authUser = Auth::findUserById($user->id);
-        $groups = $authUser['groups']->lists('code');
-        $commonGroups = array_intersect($groups, $authGroups);
+        $regGroups = $authUser['groups']->lists('code');
+        $commonGroups = array_intersect($regGroups, $authGroups);
         if (empty($commonGroups)) {
             return response()->json(['error' => 'Fobidden Access, Specific Groups Only'], 403);
         }
-        if (in_array('admin', $groups)) {
+        if (in_array('admin', $regGroups)) {
+            $request->attributes->add(['groups' => $regGroups]);
+            $request->attributes->add(['allowedGroups' => $authGroups]);
             $request->merge(['userId' => $user['id']]);
             $request->attributes->add(['own' => $own]);
             return $next($request);
