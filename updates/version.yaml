@@ -24,3 +24,4 @@ v1.22.0: Added User Groups to the Group Middleware
 v1.23.0: Changes to groups
 v1.24.0: Added Allowed Groups to the Group Middleware
 v1.25.0: Bug fix in groups Middleware
+v1.26.0: Remove the need of sodium extension
