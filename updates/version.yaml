@@ -26,3 +26,4 @@ v1.24.0: Added Allowed Groups to the Group Middleware
 v1.25.0: Bug fix in groups Middleware
 v1.26.0: Remove the need of sodium extension
 v1.27.0: Remove the need of sodium extension (1)
+v1.28.0: Fixed update and add functions in Octobase

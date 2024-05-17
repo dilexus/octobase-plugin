@@ -175,12 +175,12 @@ class Octobase
                         $record->fill(['user_id' => $userId]);
                     }
 
-                    $record->save();
-                    $record->refresh();
-
                     if (!empty($function)) {
                         $record = $function($request, $record, 'add');
                     }
+
+                    $record->save();
+                    $record->refresh();
 
                     return response()->json($record, 201);
                 } catch (\Exception $e) {
@@ -207,12 +207,12 @@ class Octobase
                             $update[$key] = $value;
                         }
 
-                        $record->update($update);
-                        $record->refresh();
-
                         if (!empty($function)) {
                             $record = $function($request, $record, 'update');
                         }
+
+                        $record->update($update);
+                        $record->refresh();
 
                         return response()->json($record);
                     } else {
