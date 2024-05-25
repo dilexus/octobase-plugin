@@ -8,9 +8,9 @@
 //
 
 use Closure;
-use RainLab\User\Facades\Auth;
-use October\Rain\Auth\Models\User;
 use Dilexus\Octobase\Models\Settings;
+use October\Rain\Auth\Models\User;
+use RainLab\User\Facades\Auth;
 
 class OctobaseAuthGroups
 {
@@ -35,7 +35,7 @@ class OctobaseAuthGroups
         $authGroups = explode(':', $groups);
         $authroization = $request->header('Authorization');
         $token = str_replace('Bearer ', '', $authroization);
-        $user = User::whereRaw('SHA2(persist_code, 256) = ?', [$token])->first();
+        $user = User::where('remember_token', $token)->first();
         if (!$user) {
             return response()->json(['error' => 'Unauthorized Access'], 401);
         }

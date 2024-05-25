@@ -28,3 +28,4 @@ v1.26.0: Remove the need of sodium extension
 v1.27.0: Remove the need of sodium extension (1)
 v1.28.0: Fixed update and add functions in Octobase
 v1.29.0: Fixed bug in the first and last name
+v2.0.0: Release with the new User Plugin 3
