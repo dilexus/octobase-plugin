@@ -4,7 +4,7 @@
     "description": "REST API Services Plugin for OctoberCMS",
     "require": {
         "composer/installers": "~1.0",
-        "rainlab/user-plugin": ">=2.1.0",
+        "rainlab/user-plugin": ">=3.0.0",
         "kreait/firebase-php": "^7.9.1"
     },
     "homepage": "https://dilan.me",

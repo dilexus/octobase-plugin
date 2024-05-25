@@ -10,14 +10,13 @@ use Dilexus\Octobase\Classes\Api\Lib\Utils;
 use Dilexus\Octobase\Models\Settings;
 use Illuminate\Http\Request;
 use October\Rain\Auth\Models\User;
-use RainLab\User\Facades\Auth;
 
 Route::prefix('octobase')->group(function () {
 
     Route::post('login', function (Request $request) {
         try {
-            $user = Auth::authenticate([
-                'login' => $request->input('email'),
+            $user = Auth::attempt([
+                'email' => $request->input('email'),
                 'password' => $request->input('password'),
             ]);
             if (!$user) {
@@ -105,8 +104,8 @@ Route::prefix('octobase')->group(function () {
                 return response()->json(['error' => 'User registration is disabled'], 403);
             } else {
                 $payload = [
-                    'name' => $request->input('first_name'),
-                    'surname' => $request->input('last_name'),
+                    'first_name' => $request->input('first_name'),
+                    'last_name' => $request->input('last_name'),
                     'email' => $request->input('email'),
                     'username' => $request->input('username'),
                     'password' => $request->input('password'),
@@ -122,8 +121,8 @@ Route::prefix('octobase')->group(function () {
                 }
                 return response()->json([
                     'id' => $authUser['id'],
-                    'first_name' => $authUser['name'],
-                    'last_name' => $authUser['surname'],
+                    'first_name' => $authUser['first_name'],
+                    'last_name' => $authUser['last_name'],
                     'email' => $authUser['email'],
                     'username' => $authUser['username'],
                     'is_activated' => $authUser['is_activated'],
