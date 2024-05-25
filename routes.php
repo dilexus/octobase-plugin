@@ -6,11 +6,11 @@
 // Website: https://www.dilan.me
 //
 
-use Illuminate\Http\Request;
-use RainLab\User\Facades\Auth;
-use October\Rain\Auth\Models\User;
-use Dilexus\Octobase\Models\Settings;
 use Dilexus\Octobase\Classes\Api\Lib\Utils;
+use Dilexus\Octobase\Models\Settings;
+use Illuminate\Http\Request;
+use October\Rain\Auth\Models\User;
+use RainLab\User\Facades\Auth;
 
 Route::prefix('octobase')->group(function () {
 
@@ -235,7 +235,6 @@ Route::prefix('octobase')->group(function () {
             if (!$authUser) {
                 $require_activation = Settings::get('require_activation');
                 $randomPass = Utils::randomPassword();
-                list($first_name, $last_name) = explode(" ", $user->displayName, 2);
 
                 $payload = [
                     'name' => $user->displayName,
