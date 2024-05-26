@@ -6,21 +6,27 @@
 // Website: https://www.dilan.me
 //
 
-use Dilexus\Octobase\Classes\Api\Lib\Utils;
-use Dilexus\Octobase\Models\Settings;
 use Illuminate\Http\Request;
 use RainLab\User\Models\User;
+use Dilexus\Octobase\Models\Settings;
+use Dilexus\Octobase\Classes\Api\Lib\Utils;
 
 Route::prefix('octobase')->group(function () {
 
     Route::post('login', function (Request $request) {
         try {
-            $attempt = Auth::attempt([
+            if (Auth::check()) {
+                Auth::logout();
+            }
+            Auth::attempt([
                 'email' => $request->input('email'),
                 'password' => $request->input('password'),
             ], true);
 
             $user = Auth::user();
+            if (Auth::check()) {
+                Auth::logout();
+            }
 
             if (!$user) {
                 return response()->json(['error' => 'No user exists for authentication purposes'], 401);
@@ -33,7 +39,7 @@ Route::prefix('octobase')->group(function () {
                 'email' => $user['email'],
                 'username' => $user['username'],
                 'groups' => $user['groups']->lists('code'),
-                'token' => $user->getRememberToken(),
+                'token' => Crypt::encryptString($user->getRememberToken()),
             ]);
 
         } catch (\Exception $e) {
@@ -44,10 +50,14 @@ Route::prefix('octobase')->group(function () {
     Route::post('logout', function (Request $request) {
         try {
             $authroization = $request->header('Authorization');
-            $token = str_replace('Bearer ', '', $authroization);
+            try {
+                $token = Crypt::decryptString(str_replace('Bearer ', '', $authroization));
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Invalid Token'], 401);
+            }
             $user = User::where('remember_token', $token)->first();
             if (!$user) {
-                return response()->json(['error' => 'Unauthroized acceess'], 401);
+                return response()->json(['error' => 'Unauthroized acceess, Expired Token'], 401);
             }
             Auth::login($user, true);
             Auth::logout();
@@ -60,7 +70,11 @@ Route::prefix('octobase')->group(function () {
     Route::post('check', function (Request $request) {
         try {
             $authroization = $request->header('Authorization');
-            $token = str_replace('Bearer ', '', $authroization);
+            try {
+                $token = Crypt::decryptString(str_replace('Bearer ', '', $authroization));
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Invalid Token'], 401);
+            }
             $user = User::where('remember_token', $token)->first();
             if (!$user) {
                 return response()->json(['error' => 'Token Expired'], 404);
@@ -105,7 +119,7 @@ Route::prefix('octobase')->group(function () {
                     'groups' => $authUser['groups']->lists('code'),
                     'avatar' => $avatar,
                     'is_new' => true,
-                    'token' => $authUser->getRememberToken()], 201
+                    'token' => Crypt::encryptString($authUser->getRememberToken())], 201
                 );
             }
         } catch (\Exception $e) {
@@ -116,10 +130,14 @@ Route::prefix('octobase')->group(function () {
     Route::get('user', function (Request $request) {
         try {
             $authroization = $request->header('Authorization');
-            $token = str_replace('Bearer ', '', $authroization);
+            try {
+                $token = Crypt::decryptString(str_replace('Bearer ', '', $authroization));
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Invalid Token'], 401);
+            }
             $user = User::where('remember_token', $token)->first();
             if (!$user) {
-                return response()->json(['error' => 'Unauthroized acceess'], 401);
+                return response()->json(['error' => 'Unauthroized acceess, Token Expired'], 401);
             }
 
             $authUser = Auth::findUserById($user->id);
@@ -138,7 +156,7 @@ Route::prefix('octobase')->group(function () {
                     'is_activated' => $authUser['is_activated'],
                     'groups' => $authUser['groups']->lists('code'),
                     'avatar' => $avatar,
-                    'token' => $token]
+                    'token' => str_replace('Bearer ', '', $authroization)]
                 );
 
             } else {
@@ -152,14 +170,19 @@ Route::prefix('octobase')->group(function () {
     Route::post('refresh', function (Request $request) {
         try {
             $authroization = $request->header('Authorization');
-            $token = str_replace('Bearer ', '', $authroization);
-
+            try {
+                $token = Crypt::decryptString(str_replace('Bearer ', '', $authroization));
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Invalid Token'], 401);
+            }
             $user = User::where('remember_token', $token)->first();
             if (!$user) {
-                return response()->json(['error' => 'Unauthroized acceess'], 401);
+                return response()->json(['error' => 'Unauthroized acceess, Token Expired'], 401);
             }
             Auth::login($user, true);
-            Auth::logout();
+            if (Auth::check()) {
+                Auth::logout();
+            }
             Auth::login($user, true);
 
             if ($user) {
@@ -176,7 +199,7 @@ Route::prefix('octobase')->group(function () {
                     'is_activated' => $user['is_activated'],
                     'groups' => $user['groups']->lists('code'),
                     'avatar' => $avatar,
-                    'token' => $user->getRememberToken()]
+                    'token' => Crypt::encryptString($user->getRememberToken())]
                 );
 
             } else {
@@ -219,6 +242,9 @@ Route::prefix('octobase')->group(function () {
                 $authUser = Auth::register($payload, $require_activation);
                 Auth::setUser($authUser);
                 Auth::login($authUser, true);
+                if (Auth::check()) {
+                    Auth::logout();
+                }
                 $groups = Settings::get('default_groups');
                 if ($groups) {
                     $groups = array_map('intval', explode(',', $groups));
@@ -240,11 +266,14 @@ Route::prefix('octobase')->group(function () {
                     'groups' => $authUser['groups']->lists('code'),
                     'avatar' => $avatar,
                     'is_new' => true,
-                    'token' => $authUser->getRememberToken()], 201
+                    'token' => Crypt::encryptString($authUser->getRememberToken())], 201
                 );
             } else {
                 Auth::setUser($authUser);
                 Auth::login($authUser, true);
+                if (Auth::check()) {
+                    Auth::logout();
+                }
                 if ($authUser) {
                     $avatar = $authUser['avatar'];
                     if ($avatar) {
@@ -259,7 +288,7 @@ Route::prefix('octobase')->group(function () {
                         'is_activated' => $authUser['is_activated'],
                         'groups' => $authUser['groups']->lists('code'),
                         'avatar' => $avatar,
-                        'token' => $authUser->getRememberToken()]
+                        'token' => Crypt::encryptString($authUser->getRememberToken())]
                     );
 
                 } else {

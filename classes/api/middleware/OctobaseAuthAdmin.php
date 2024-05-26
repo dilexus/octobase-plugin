@@ -9,6 +9,7 @@
 
 use Closure;
 use Dilexus\Octobase\Models\Settings;
+use Illuminate\Support\Facades\Crypt;
 use October\Rain\Auth\Models\User;
 use RainLab\User\Facades\Auth;
 
@@ -21,7 +22,11 @@ class OctobaseAuthAdmin
         }
 
         $authroization = $request->header('Authorization');
-        $token = str_replace('Bearer ', '', $authroization);
+        try {
+            $token = Crypt::decryptString(str_replace('Bearer ', '', $authroization));
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Invalid Token'], 401);
+        }
         $user = User::where('remember_token', $token)->first();
         if (!$user) {
             return response()->json(['error' => 'Unauthorized Access'], 401);

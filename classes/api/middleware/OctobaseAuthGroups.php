@@ -8,9 +8,10 @@
 //
 
 use Closure;
-use Dilexus\Octobase\Models\Settings;
-use October\Rain\Auth\Models\User;
 use RainLab\User\Facades\Auth;
+use October\Rain\Auth\Models\User;
+use Dilexus\Octobase\Models\Settings;
+use Illuminate\Support\Facades\Crypt;
 
 class OctobaseAuthGroups
 {
@@ -34,10 +35,14 @@ class OctobaseAuthGroups
 
         $authGroups = explode(':', $groups);
         $authroization = $request->header('Authorization');
-        $token = str_replace('Bearer ', '', $authroization);
+        try {
+            $token = Crypt::decryptString(str_replace('Bearer ', '', $authroization));
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Invalid Token'], 401);
+        }
         $user = User::where('remember_token', $token)->first();
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized Access'], 401);
+            return response()->json(['error' => 'Unauthorized Access, Token Expired'], 401);
         }
         $authUser = Auth::findUserById($user->id);
         $regGroups = $authUser['groups']->lists('code');
