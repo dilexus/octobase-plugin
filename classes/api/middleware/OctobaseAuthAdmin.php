@@ -9,9 +9,9 @@
 
 use Closure;
 use Dilexus\Octobase\Models\Settings;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
-use October\Rain\Auth\Models\User;
-use RainLab\User\Facades\Auth;
+use RainLab\User\Models\User;
 
 class OctobaseAuthAdmin
 {

@@ -8,10 +8,11 @@
 //
 
 use Closure;
-use RainLab\User\Facades\Auth;
-use October\Rain\Auth\Models\User;
 use Dilexus\Octobase\Models\Settings;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use RainLab\User\Models\User;
+
 
 class OctobaseAuthGroups
 {
