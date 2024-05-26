@@ -24,8 +24,11 @@ Route::prefix('octobase')->group(function () {
             ], true);
 
             $user = Auth::user();
-            if (Auth::check()) {
-                Auth::logout();
+
+            if (Settings::get('one_session_per_user')) {
+                if (Auth::check()) {
+                    Auth::logout();
+                }
             }
 
             if (!$user) {
@@ -242,8 +245,10 @@ Route::prefix('octobase')->group(function () {
                 $authUser = Auth::register($payload, $require_activation);
                 Auth::setUser($authUser);
                 Auth::login($authUser, true);
-                if (Auth::check()) {
-                    Auth::logout();
+                if (Settings::get('one_session_per_user')) {
+                    if (Auth::check()) {
+                        Auth::logout();
+                    }
                 }
                 $groups = Settings::get('default_groups');
                 if ($groups) {
@@ -271,8 +276,10 @@ Route::prefix('octobase')->group(function () {
             } else {
                 Auth::setUser($authUser);
                 Auth::login($authUser, true);
-                if (Auth::check()) {
-                    Auth::logout();
+                if (Settings::get('one_session_per_user')) {
+                    if (Auth::check()) {
+                        Auth::logout();
+                    }
                 }
                 if ($authUser) {
                     $avatar = $authUser['avatar'];

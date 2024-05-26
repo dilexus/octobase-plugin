@@ -21,6 +21,11 @@ tabs:
             span: full
             type: checkbox
             comment: "Activate user upon registration"
+        one_session_per_user:
+            label: "One Session per User"
+            span: full
+            type: checkbox
+            comment: "One session per user at a time"
         list_with_data:
             label: "Lists in a Data Object"
             span: full
