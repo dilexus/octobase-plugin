@@ -30,3 +30,4 @@ v1.28.0: Fixed update and add functions in Octobase
 v1.29.0: Fixed bug in the first and last name
 v2.0.0: Release with the new User Plugin 3
 v2.1.0: Make tokens more secure
+v2.2.0: Fixed issue with groups and admin
