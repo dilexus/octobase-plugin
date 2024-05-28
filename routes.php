@@ -6,14 +6,40 @@
 // Website: https://www.dilan.me
 //
 
-use Illuminate\Http\Request;
-use RainLab\User\Models\User;
-use Dilexus\Octobase\Models\Settings;
 use Dilexus\Octobase\Classes\Api\Lib\Utils;
+use Dilexus\Octobase\Models\Settings;
+use Illuminate\Http\Request;
+use Kreait\Firebase\Exception\AppCheck\FailedToVerifyAppCheckToken;
+use RainLab\User\Models\User;
 
 Route::prefix('octobase')->group(function () {
 
     Route::post('login', function (Request $request) {
+
+        if (Settings::get('login_disabled')) {
+            return response()->json(['error' => 'User login is disabled'], 403);
+        }
+
+        if (Settings::get('enable_firebase_appcheck_on_manual_login')) {
+            $firebase_credentials = Settings::get('firebase_credentials');
+            if (!empty($firebase_credentials)) {
+                $factory = (new \Kreait\Firebase\Factory)->withServiceAccount($firebase_credentials);
+            } else {
+                $factory = (new \Kreait\Firebase\Factory)->withServiceAccount('config/firebase_credentials.json');
+            }
+            try {
+                $appcheckToken = $request->header('X-Firebase-AppCheck');
+                if ($appcheckToken === null) {
+                    return response()->json(['error' => "Invalid App check Token"], 400);
+                }
+                $appCheck = $factory->createAppCheck();
+                $appCheck->verifyToken($request->header('X-Firebase-AppCheck'));
+            } catch (FailedToVerifyAppCheckToken $e) {
+                return response()->json(['error' => $e->getMessage()], 400);
+            }
+
+        }
+
         try {
             if (Auth::check()) {
                 Auth::logout();
@@ -89,42 +115,63 @@ Route::prefix('octobase')->group(function () {
     });
 
     Route::post('register', function (Request $request) {
+
         try {
             $registration_disabled = Settings::get('registration_disabled');
             $require_activation = Settings::get('require_activation');
-            Settings::get('registration_disabled');
             if ($registration_disabled) {
                 return response()->json(['error' => 'User registration is disabled'], 403);
-            } else {
-                $payload = [
-                    'first_name' => $request->input('first_name'),
-                    'last_name' => $request->input('last_name'),
-                    'email' => $request->input('email'),
-                    'username' => $request->input('username'),
-                    'password' => $request->input('password'),
-                    'password_confirmation' => $request->input('password_confirmation'),
-                ];
-                $authUser = Auth::register($payload, $require_activation);
-                Auth::setUser($authUser);
-                Auth::login($authUser, true);
-                $authUser->groups()->attach(2);
-                $avatar = $authUser['avatar'];
-                if ($avatar) {
-                    $avatar = ['path' => $avatar['path'], 'extenstion' => $avatar['extension']];
-                }
-                return response()->json([
-                    'id' => $authUser['id'],
-                    'first_name' => $authUser['first_name'],
-                    'last_name' => $authUser['last_name'],
-                    'email' => $authUser['email'],
-                    'username' => $authUser['username'],
-                    'is_activated' => $authUser['is_activated'],
-                    'groups' => $authUser['groups']->lists('code'),
-                    'avatar' => $avatar,
-                    'is_new' => true,
-                    'token' => Crypt::encryptString($authUser->getRememberToken())], 201
-                );
             }
+
+            if (Settings::get('enable_firebase_appcheck_on_manual_login')) {
+                $firebase_credentials = Settings::get('firebase_credentials');
+                if (!empty($firebase_credentials)) {
+                    $factory = (new \Kreait\Firebase\Factory)->withServiceAccount($firebase_credentials);
+                } else {
+                    $factory = (new \Kreait\Firebase\Factory)->withServiceAccount('config/firebase_credentials.json');
+                }
+                try {
+                    $appcheckToken = $request->header('X-Firebase-AppCheck');
+                    if ($appcheckToken === null) {
+                        return response()->json(['error' => "Invalid Appcheck Token"], 400);
+                    }
+                    $appCheck = $factory->createAppCheck();
+                    $appCheck->verifyToken($request->header('X-Firebase-AppCheck'));
+                } catch (FailedToVerifyAppCheckToken $e) {
+                    return response()->json(['error' => $e->getMessage()], 400);
+                }
+
+            }
+
+            $payload = [
+                'first_name' => $request->input('first_name'),
+                'last_name' => $request->input('last_name'),
+                'email' => $request->input('email'),
+                'username' => $request->input('username'),
+                'password' => $request->input('password'),
+                'password_confirmation' => $request->input('password_confirmation'),
+            ];
+            $authUser = Auth::register($payload, $require_activation);
+            Auth::setUser($authUser);
+            Auth::login($authUser, true);
+            $authUser->groups()->attach(2);
+            $avatar = $authUser['avatar'];
+            if ($avatar) {
+                $avatar = ['path' => $avatar['path'], 'extenstion' => $avatar['extension']];
+            }
+            return response()->json([
+                'id' => $authUser['id'],
+                'first_name' => $authUser['first_name'],
+                'last_name' => $authUser['last_name'],
+                'email' => $authUser['email'],
+                'username' => $authUser['username'],
+                'is_activated' => $authUser['is_activated'],
+                'groups' => $authUser['groups']->lists('code'),
+                'avatar' => $avatar,
+                'is_new' => true,
+                'token' => Crypt::encryptString($authUser->getRememberToken())], 201
+            );
+
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
@@ -172,6 +219,27 @@ Route::prefix('octobase')->group(function () {
 
     Route::post('refresh', function (Request $request) {
         try {
+
+            if (Settings::get('enable_firebase_appcheck_on_manual_login')) {
+                $firebase_credentials = Settings::get('firebase_credentials');
+                if (!empty($firebase_credentials)) {
+                    $factory = (new \Kreait\Firebase\Factory)->withServiceAccount($firebase_credentials);
+                } else {
+                    $factory = (new \Kreait\Firebase\Factory)->withServiceAccount('config/firebase_credentials.json');
+                }
+                try {
+                    $appcheckToken = $request->header('X-Firebase-AppCheck');
+                    if ($appcheckToken === null) {
+                        return response()->json(['error' => "Invalid Appcheck Token"], 400);
+                    }
+                    $appCheck = $factory->createAppCheck();
+                    $appCheck->verifyToken($request->header('X-Firebase-AppCheck'));
+                } catch (FailedToVerifyAppCheckToken $e) {
+                    return response()->json(['error' => $e->getMessage()], 400);
+                }
+
+            }
+
             $authroization = $request->header('Authorization');
             try {
                 $token = Crypt::decryptString(str_replace('Bearer ', '', $authroization));
@@ -215,13 +283,22 @@ Route::prefix('octobase')->group(function () {
 
     Route::post('login/firebase', function (Request $request) {
         try {
+
             $idTokenString = $request->input('token');
-            $credentialsArray = json_decode(Settings::get('firebase_credentials'), true);
             $firebase_credentials = Settings::get('firebase_credentials');
             if (!empty($firebase_credentials)) {
                 $factory = (new \Kreait\Firebase\Factory)->withServiceAccount($firebase_credentials);
             } else {
                 $factory = (new \Kreait\Firebase\Factory)->withServiceAccount('config/firebase_credentials.json');
+            }
+
+            if (Settings::get('enable_firebase_appcheck_on_firebase_login')) {
+                $appcheckToken = $request->header('X-Firebase-AppCheck');
+                if ($appcheckToken === null) {
+                    return response()->json(['error' => "Invalid Appcheck Token"], 400);
+                }
+                $appCheck = $factory->createAppCheck();
+                $appCheck->verifyToken($request->header('X-Firebase-AppCheck'));
             }
 
             $auth = $factory->createAuth();

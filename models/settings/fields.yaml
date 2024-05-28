@@ -12,10 +12,15 @@ tabs:
             default: "1"
             comment: "This only works if Debug Mode is on. This is the user id that will be retuned in debugging"
         registration_disabled:
-            label: "Disable Registration"
+            label: "Disable Manual Registration"
             span: full
             type: checkbox
-            comment: "Disable user registration through the API"
+            comment: "Disable manual user registration through the API"
+        login_disabled:
+            label: "Disable Manual Login"
+            span: full
+            type: checkbox
+            comment: "Disable user manual login with email and password through the API"
         require_activation:
             label: "Activiate User"
             span: full
@@ -50,3 +55,15 @@ tabs:
             type: textarea
             size: large
             comment: "You need to Enable firebase authentication. This should be in json format. Contents inside firebase_credentials.json"
+        enable_firebase_appcheck_on_firebase_login:
+            label: "Enable Firebase Appcheck on Firebase login"
+            tab: "Firebase"
+            span: full
+            type: checkbox
+            comment: "Enable Firebase Appcheck on Firebase login"
+        enable_firebase_appcheck_on_manual_login:
+            label: "Enable Firebase Appcheck on manual registration and login"
+            tab: "Firebase"
+            span: full
+            type: checkbox
+            comment: "Enable Firebase Appcheck on manual registration and login"
