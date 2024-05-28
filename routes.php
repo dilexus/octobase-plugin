@@ -6,11 +6,11 @@
 // Website: https://www.dilan.me
 //
 
-use Dilexus\Octobase\Classes\Api\Lib\Utils;
-use Dilexus\Octobase\Models\Settings;
 use Illuminate\Http\Request;
-use Kreait\Firebase\Exception\AppCheck\FailedToVerifyAppCheckToken;
 use RainLab\User\Models\User;
+use Dilexus\Octobase\Models\Settings;
+use Dilexus\Octobase\Classes\Api\Lib\Utils;
+use Kreait\Firebase\Exception\AppCheck\FailedToVerifyAppCheckToken;
 
 Route::prefix('octobase')->group(function () {
 
@@ -30,7 +30,7 @@ Route::prefix('octobase')->group(function () {
             try {
                 $appcheckToken = $request->header('X-Firebase-AppCheck');
                 if ($appcheckToken === null) {
-                    return response()->json(['error' => "Invalid App check Token"], 400);
+                    return response()->json(['error' => "Invalid Appcheck Token"], 400);
                 }
                 $appCheck = $factory->createAppCheck();
                 $appCheck->verifyToken($request->header('X-Firebase-AppCheck'));
