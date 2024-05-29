@@ -33,3 +33,4 @@ v2.1.0: Make tokens more secure
 v2.2.0: Fixed issue with groups and admin
 v2.3.0: Added one session per user at a time
 v2.4.0: Added app check for firebase
+v2.4.1: Changes to error messages
