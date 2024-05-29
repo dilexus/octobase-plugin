@@ -17,7 +17,7 @@ Route::prefix('octobase')->group(function () {
     Route::post('login', function (Request $request) {
 
         if (Settings::get('login_disabled')) {
-            return response()->json(['error' => 'User login is disabled'], 403);
+            return response()->json(['message' => 'User login is disabled'], 403);
         }
 
         if (Settings::get('enable_firebase_appcheck_on_manual_login')) {
@@ -30,12 +30,12 @@ Route::prefix('octobase')->group(function () {
             try {
                 $appcheckToken = $request->header('X-Firebase-AppCheck');
                 if ($appcheckToken === null) {
-                    return response()->json(['error' => "Invalid Appcheck Token"], 400);
+                    return response()->json(['message' => "Invalid Appcheck Token"], 400);
                 }
                 $appCheck = $factory->createAppCheck();
                 $appCheck->verifyToken($request->header('X-Firebase-AppCheck'));
             } catch (FailedToVerifyAppCheckToken $e) {
-                return response()->json(['error' => $e->getMessage()], 400);
+                return response()->json(['message' => $e->getMessage()], 400);
             }
 
         }
@@ -58,7 +58,7 @@ Route::prefix('octobase')->group(function () {
             }
 
             if (!$user) {
-                return response()->json(['error' => 'No user exists for authentication purposes'], 401);
+                return response()->json(['message' => 'No user exists for authentication purposes'], 401);
             }
 
             return response()->json([
@@ -72,7 +72,7 @@ Route::prefix('octobase')->group(function () {
             ]);
 
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json(['message' => $e->getMessage()], 400);
         }
     });
 
@@ -82,17 +82,17 @@ Route::prefix('octobase')->group(function () {
             try {
                 $token = Crypt::decryptString(str_replace('Bearer ', '', $authroization));
             } catch (\Exception $e) {
-                return response()->json(['error' => 'Invalid Token'], 401);
+                return response()->json(['message' => 'Invalid Token'], 401);
             }
             $user = User::where('remember_token', $token)->first();
             if (!$user) {
-                return response()->json(['error' => 'Unauthroized acceess, Expired Token'], 401);
+                return response()->json(['message' => 'Unauthroized acceess, Expired Token'], 401);
             }
             Auth::login($user, true);
             Auth::logout();
             return response()->json(['success' => 'Signout Success']);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json(['message' => $e->getMessage()], 400);
         }
     });
 
@@ -102,15 +102,15 @@ Route::prefix('octobase')->group(function () {
             try {
                 $token = Crypt::decryptString(str_replace('Bearer ', '', $authroization));
             } catch (\Exception $e) {
-                return response()->json(['error' => 'Invalid Token'], 401);
+                return response()->json(['message' => 'Invalid Token'], 401);
             }
             $user = User::where('remember_token', $token)->first();
             if (!$user) {
-                return response()->json(['error' => 'Token Expired'], 404);
+                return response()->json(['message' => 'Token Expired'], 404);
             }
             return response()->json(['success' => 'Token Exists'], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json(['message' => $e->getMessage()], 400);
         }
     });
 
@@ -120,7 +120,7 @@ Route::prefix('octobase')->group(function () {
             $registration_disabled = Settings::get('registration_disabled');
             $require_activation = Settings::get('require_activation');
             if ($registration_disabled) {
-                return response()->json(['error' => 'User registration is disabled'], 403);
+                return response()->json(['message' => 'User registration is disabled'], 403);
             }
 
             if (Settings::get('enable_firebase_appcheck_on_manual_login')) {
@@ -133,12 +133,12 @@ Route::prefix('octobase')->group(function () {
                 try {
                     $appcheckToken = $request->header('X-Firebase-AppCheck');
                     if ($appcheckToken === null) {
-                        return response()->json(['error' => "Invalid Appcheck Token"], 400);
+                        return response()->json(['message' => "Invalid Appcheck Token"], 400);
                     }
                     $appCheck = $factory->createAppCheck();
                     $appCheck->verifyToken($request->header('X-Firebase-AppCheck'));
                 } catch (FailedToVerifyAppCheckToken $e) {
-                    return response()->json(['error' => $e->getMessage()], 400);
+                    return response()->json(['message' => $e->getMessage()], 400);
                 }
 
             }
@@ -173,7 +173,7 @@ Route::prefix('octobase')->group(function () {
             );
 
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json(['message' => $e->getMessage()], 400);
         }
     });
 
@@ -183,11 +183,11 @@ Route::prefix('octobase')->group(function () {
             try {
                 $token = Crypt::decryptString(str_replace('Bearer ', '', $authroization));
             } catch (\Exception $e) {
-                return response()->json(['error' => 'Invalid Token'], 401);
+                return response()->json(['message' => 'Invalid Token'], 401);
             }
             $user = User::where('remember_token', $token)->first();
             if (!$user) {
-                return response()->json(['error' => 'Unauthroized acceess, Token Expired'], 401);
+                return response()->json(['message' => 'Unauthroized acceess, Token Expired'], 401);
             }
 
             $authUser = Auth::findUserById($user->id);
@@ -210,10 +210,10 @@ Route::prefix('octobase')->group(function () {
                 );
 
             } else {
-                return response()->json(['error' => 'User not Found for the given token'], 404);
+                return response()->json(['message' => 'User not Found for the given token'], 404);
             }
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json(['message' => $e->getMessage()], 400);
         }
     });
 
@@ -230,12 +230,12 @@ Route::prefix('octobase')->group(function () {
                 try {
                     $appcheckToken = $request->header('X-Firebase-AppCheck');
                     if ($appcheckToken === null) {
-                        return response()->json(['error' => "Invalid Appcheck Token"], 400);
+                        return response()->json(['message' => "Invalid Appcheck Token"], 400);
                     }
                     $appCheck = $factory->createAppCheck();
                     $appCheck->verifyToken($request->header('X-Firebase-AppCheck'));
                 } catch (FailedToVerifyAppCheckToken $e) {
-                    return response()->json(['error' => $e->getMessage()], 400);
+                    return response()->json(['message' => $e->getMessage()], 400);
                 }
 
             }
@@ -244,11 +244,11 @@ Route::prefix('octobase')->group(function () {
             try {
                 $token = Crypt::decryptString(str_replace('Bearer ', '', $authroization));
             } catch (\Exception $e) {
-                return response()->json(['error' => 'Invalid Token'], 401);
+                return response()->json(['message' => 'Invalid Token'], 401);
             }
             $user = User::where('remember_token', $token)->first();
             if (!$user) {
-                return response()->json(['error' => 'Unauthroized acceess, Token Expired'], 401);
+                return response()->json(['message' => 'Unauthroized acceess, Token Expired'], 401);
             }
             Auth::login($user, true);
             if (Auth::check()) {
@@ -274,10 +274,10 @@ Route::prefix('octobase')->group(function () {
                 );
 
             } else {
-                return response()->json(['error' => 'User Not Found for the given token'], 400);
+                return response()->json(['message' => 'User Not Found for the given token'], 400);
             }
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json(['message' => $e->getMessage()], 400);
         }
     });
 
@@ -295,7 +295,7 @@ Route::prefix('octobase')->group(function () {
             if (Settings::get('enable_firebase_appcheck_on_firebase_login')) {
                 $appcheckToken = $request->header('X-Firebase-AppCheck');
                 if ($appcheckToken === null) {
-                    return response()->json(['error' => "Invalid Appcheck Token"], 400);
+                    return response()->json(['message' => "Invalid Appcheck Token"], 400);
                 }
                 $appCheck = $factory->createAppCheck();
                 $appCheck->verifyToken($request->header('X-Firebase-AppCheck'));
@@ -377,13 +377,13 @@ Route::prefix('octobase')->group(function () {
 
                 } else {
                     Auth::logout();
-                    return response()->json(['error' => 'User Not Found for the given token'], 400);
+                    return response()->json(['message' => 'User Not Found for the given token'], 400);
                 }
             }
 
         } catch (\Exception $e) {
             Auth::logout();
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json(['message' => $e->getMessage()], 400);
         }
     });
 
